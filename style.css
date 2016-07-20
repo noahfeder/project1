@@ -9,21 +9,25 @@ body {
 }
 
 .centered {
-  width: 100%;
-  margin: 0 auto;
   display: block;
   position: fixed;
+  width: 800px;
+  left: 50%;
+  margin-left: -400px;
 }
 
 
 h1 {
   text-align: center;
+  line-height: 2.5em;
+  width: 806px;
+  width: 100%;
 }
 
 .centerColumn {
   height: 100vh;
   margin: 0 auto;
-  /* border: 4px solid green; */
+  width: 806px;
 }
 
 .window {
@@ -39,27 +43,57 @@ h1 {
   background-size: cover;
 }
 
-.guy {
+.guybrush {
   background-image: url('img/guybrush.png');
   background-repeat: no-repeat;
   transform: scale(2,2);
   transform-origin: -11px 100px;
   position: relative;
-}
-
-.guy.facingMe {
   background-position: -6px -3px;
   width: 22px;
   height: 47px;
-
+  top: 400px;
 }
 
-.guy.walking1 {
+.guybrush.right {
+  transform: scale(2,2) rotateY(180deg);
+  transform-origin: 11px 100px;
+}
+
+.walking1 {
   background-position: -35px -63px;
   width: 22px;
   height: 47px;
-  top: 400px;
-  left: 0px;
+}
+
+.walking2 {
+  background-position: -62px -63px;
+  width: 19px;
+  height: 47px;
+}
+
+.walking3 {
+  background-position:-87px -63px;
+  width: 32px;
+  height: 47px;
+}
+
+.walking4 {
+  background-position:-128px -63px;
+  width: 17px;
+  height: 47px;
+}
+
+.walking5 {
+  background-position:-153px -63px;
+  width: 19px;
+  height: 47px;
+}
+
+.walking6 {
+  background-position:-179px -63px;
+  width: 32px;
+  height: 46px;
 }
 
 .controls {
@@ -83,11 +117,4 @@ input {
   border-image: none;
 }
 
-@media (min-width: 800px) {
-  .centered {
-    width: 800px;
-    left: 50%;
-    margin-left: -400px;
-  }
 
-}
