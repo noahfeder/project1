@@ -146,6 +146,7 @@ $(function(){
 
     var input = {
       'parse' : function(input) {
+      // Regex help from http://stackoverflow.com/questions/20731966/regex-remove-all-special-characters-except-numbers
       var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
       switch (inputArr[0]) {
         case 'right':

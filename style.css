@@ -182,6 +182,28 @@ h1 {
   -webkit-border-image: url(img/border.png) 3 stretch;
   -o-border-image: url(img/border.png) 3 stretch;
   border-top-width: 0px;
+  display: flex;
+  flex-flow: row nowrap;
+  padding-top: 10px;
+}
+
+.commands, .inventory {
+  border: 1px solid white;
+  height: 90px;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.commands
+
+.command {
+  flex: 1 0 40px;
+  border: 1px solid red;
+}
+
+.stored {
+  flex: 1 0 50px;
+  border: 1px solid blue;
 }
 
 input {
