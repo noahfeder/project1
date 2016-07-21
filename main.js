@@ -1,6 +1,7 @@
 "use strict";
 $(function(){
     var $guybrush = $('.guybrush');
+    var $message = $('.message');
 
     //name, className, width, height, top, left required for positioning; others are handled by prototypes
 
@@ -12,7 +13,7 @@ $(function(){
       this.storable = storable;
       this.openable = openable;
       this.usable = usable;
-      this.console = container;
+      this.container = container;
       this.items = items;
     }
 
@@ -28,25 +29,45 @@ $(function(){
         top: this.top,
         left: this.left
       });
+      $item.attr('data-name', this.name);
+      worldItems[this.name] = this;
       $item.appendTo('.window');
+    };
+    Item.prototype.store = function() {
+      guybrush.inventory[this.name] = this;
+    };
+
+    var worldItems = {};
+    // initializer to set up items for each screen
+
+    var setup = {
+      'welcome': function() {
+        //TODO MAYBE: Load in inventory, welcome splash screen?
+      },
+      'screen1': function() {
+        var chest = new Item('chest','chest green',300,100,false,true,false,true,['bug']).place();
+        var chest2 = new Item('chest2','chest red',300,200,false,true,false,true,['rat']).place();
+        var chest3 = new Item('chest3','chest blue',300,300,false,true,false,true,['key']).place();
+        var gate = new Item('gate','gate',380,605).place();
+        var turtle = new Item('turtle','turtle',359,476).place();
+        var bomb = new Item('bomb','bomb',0,0,true,false,true).store();
+        var sword = new Item('sword','sword',0,0,true,false,true).store();
+        console.log(worldItems);
+        console.log(guybrush.inventory);
+      },
+      'screen2': function() {
+        //TODO SECOND SCREEN
+      },
+      'screen3': function() {
+        //TODO FINAL SCREEN
+      },
+      'clear' : function() {
+        // TODO LOADING SCREEN
+        $('.item').remove();
+      }
     };
 
 
-
-    var chest = new Item('chest','chest',300,100,false,true,false,true,['bugs']);
-    chest.place();
-
-    var chest2 = new Item('chest2','chest open',300,200,false,true,false,true,['rats']);
-    chest2.place();
-
-    var chest3 = new Item('chest3','chest',300,300,false,true,false,true,['keys']);
-    chest3.place();
-
-    var gate = new Item('gate','gate',380,600);
-    gate.place();
-
-    var turtle = new Item('turtle','turtle',359,476);
-    turtle.place();
     // Guybrush object! Contains statuses and methods
 
     var guybrush = {
@@ -72,30 +93,79 @@ $(function(){
       'inventory':{}
     }
 
+    var actions = {
+      'right': function(destination) {
+        guybrush.stop();
+        $guybrush.removeClass('right');
+        guybrush.walk();
+        setTimeout(guybrush.stop,1200);
+        var curr = parseInt($guybrush.css('left'));
+        curr = destination ? destination : curr + 35;
+        curr = (curr > 750) ? 750 : curr;
+        $guybrush.css('left', curr+'px');
+      },
+      'left': function(destination) {
+        guybrush.stop();
+        $guybrush.addClass('right');
+        guybrush.walk();
+        setTimeout(guybrush.stop,1200);
+        var curr = parseInt($guybrush.css('left'));
+        curr = destination ? destination : curr - 35;
+        curr = (curr < 35) ? 35 : curr;
+        $guybrush.css('left', curr+'px');
+      },
+      'say' : function(inputArr) {
+        var statement = inputArr.reduce(function(prev,curr,ind){
+          if (ind === 0){
+            return;
+          } else if (ind === 1) {
+            return curr.charAt(0).toUpperCase() + curr.substring(1);
+          } else {
+            return prev + ' ' + curr;
+          }
+        });
+        return statement + '.';
+      },
+      'open' : function(item) {
+        var currentItem = worldItems[item];
+        if (!currentItem) {
+          input.print('That doesn\'t exist here.');
+        } else if (!currentItem.openable) {
+          input.print('I can\'t open that.');
+        } else {
+          $('[data-name='+currentItem.name).addClass('open');
+          if (!currentItem.container) {
+            input.print('I opened it!');
+          } else {
+            input.print('There is a ' + currentItem.items[0] + ' inside');
+          }
+        }
+      }
+
+    }
+
     var input = {
       'parse' : function(input) {
-      var inputArr = input.toLowerCase().split(' ');
+      var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
       switch (inputArr[0]) {
         case 'right':
-          guybrush.stop();
-          $guybrush.removeClass('right');
-          guybrush.walk();
-          setTimeout(guybrush.stop,1200);
-          var curr = parseInt($guybrush.css('left'));
-          curr = (curr >= 715) ? 750 : curr + 35;
-          $guybrush.css('left', curr+'px');
+          actions.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
         case 'left':
-          guybrush.stop();
-          $guybrush.addClass('right');
-          guybrush.walk();
-          setTimeout(guybrush.stop,1200);
-          var curr = parseInt($guybrush.css('left'));
-          curr -= (curr <= 35) ? curr : 35;
-          $guybrush.css('left', curr+'px');
+          actions.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
         case 'stop':
           guybrush.stop();
+          break;
+        case 'say':
+          this.print((inputArr[1]) ? actions.say(inputArr) : 'Hello!');
+          break;
+        case 'open':
+          if (!inputArr[1]) {
+            this.error();
+          } else {
+            actions.open(inputArr[1]);
+          }
           break;
         //TODO ADD VERB ACTIONS
 
@@ -104,7 +174,11 @@ $(function(){
       },
       'print' : function(msg) {
         if (msg) {
-          //TODO  ADD ::BEFORE TO GUYBRUSH
+          $message.css('opacity', 1);
+          $message.text(msg)
+          setTimeout(function() {
+            $message.css('opacity', 0);
+          }, 2000)
         }
       },
       'capitalize' : function(word) {
@@ -120,12 +194,13 @@ $(function(){
         })
       },
       'error': function() {
-        this.print('I didn\'t quite get that, pal.');
+        this.print('I didn\'t quite get that.');
       }
     }
-    input.init();
-    $('.kill').click(function(){
-      $('.item').remove();
-    })
 
+    input.init();
+    setup.screen1();
+    $('.kill').click(function(){
+      setup.clear();
+    });
 });

@@ -3,7 +3,7 @@ body {
   padding: 0;
   border: 0;
   box-sizing: border-box;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: courier;
   background-color: black;
   color: green;
 }
@@ -24,6 +24,27 @@ h1 {
   width: 100%;
 }
 
+.message {
+  min-width: 100px;
+  min-height: 40px;
+  background-image: url(img/text.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  font-size: 0.1rem;
+  padding: 10px;
+  top: -54px;
+  border: 4px solid transparent;
+  opacity: 0;
+  word-wrap: break-word;
+}
+
+.right .message {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  background-image: url(img/text2.png);
+}
+
 .centerColumn {
   height: 100vh;
   margin: 0 auto;
@@ -39,7 +60,7 @@ h1 {
   -webkit-border-image: url(img/border.png) 3 stretch;
   -o-border-image: url(img/border.png) 3 stretch;
   border-image: url(img/border.png) 3 stretch;
-  background-image: url(img/bg4.gif);
+  background-image: url(img/bg100.gif);
   background-size: cover;
   overflow: hidden;
 }
@@ -116,6 +137,21 @@ h1 {
 
 .chest.open {
   background-image: url(img/chestopened.png);
+}
+
+.chest.green {
+  filter: hue-rotate(110deg);
+  -webkit-filter: hue-rotate(110deg);
+}
+
+.chest.blue {
+  filter: hue-rotate(240deg);
+  -webkit-filter: hue-rotate(240deg);
+}
+
+.chest.red {
+  filter: hue-rotate(350deg) saturate(1.7);
+  -webkit-filter: hue-rotate(35x0deg) saturate(1.7);
 }
 
 .gate {
