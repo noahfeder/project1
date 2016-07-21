@@ -6,6 +6,9 @@ body {
   font-family: courier;
   background-color: black;
   color: green;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
 .centered {
@@ -184,6 +187,11 @@ h1 {
   background-image: url(img/bomb.png);
 }
 
+.chicken {
+  background-image: url(img/chick.png);
+  background-size: contain;
+}
+
 .bug {
   background-image: url(img/bug.png);
   background-size: contain;
@@ -241,7 +249,7 @@ h1 {
 .command {
   flex: 1 0 40px;
   border: 1px dotted #333;
-  text-shadow: 0px 0px transparent;
+  text-shadow: 1px 1px transparent;
   transition: text-shadow 0.2s;
 }
 

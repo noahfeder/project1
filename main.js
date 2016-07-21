@@ -48,6 +48,7 @@ $(function(){
     var setup = {
       'welcome': function() {
         //TODO MAYBE: Load in inventory, welcome splash screen?
+
       },
       'screen1': function() {
         var chest = new Item('chest','chest green',300,100,false,true,false,false,true,['bug']).place();
@@ -78,7 +79,7 @@ $(function(){
     var guybrush = {
       'alive': true,
       'moving': 0,
-      'right': false,
+      'rightStatus': false,
       'walk': function() {
         var i = 0
         guybrush.moving = setInterval(function(){
@@ -89,37 +90,34 @@ $(function(){
       },
       'stop': function() {
         clearInterval(guybrush.moving);
-        this.right = $guybrush.hasClass('right');
+        guybrush.moving = 0;
+        this.rightStatus = $guybrush.hasClass('right');
         $guybrush.removeClass().addClass('guybrush');
-        if (this.right) {
+        if (this.rightStatus) {
           $guybrush.addClass('right');
         }
       },
       'inventory':{},
       'near' : function(item) {
-        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 1000); //TODO BOUND
-      }
-    }
-
-    var actions = {
-      'right': function(destination) {
+        console.log(Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left));
+        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 60000); //TODO BOUND
+      },
+      'right': function() {
         guybrush.stop();
         $guybrush.removeClass('right');
         guybrush.walk();
         setTimeout(guybrush.stop,1200);
         var curr = parseInt($guybrush.css('left'));
-        curr = destination ? destination : curr + 35;
-        curr = (curr > 750) ? 750 : curr;
+        curr = (curr > 750) ? 750 : curr + 35;
         $guybrush.css('left', curr+'px');
       },
-      'left': function(destination) {
+      'left': function() {
         guybrush.stop();
         $guybrush.addClass('right');
         guybrush.walk();
         setTimeout(guybrush.stop,1200);
         var curr = parseInt($guybrush.css('left'));
-        curr = destination ? destination : curr - 35;
-        curr = (curr < 35) ? 35 : curr;
+        curr = (curr < 35) ? 35 : curr - 35;
         $guybrush.css('left', curr+'px');
       },
       'say' : function(inputArr) {
@@ -150,11 +148,8 @@ $(function(){
               } else {
                 input.print('There is a ' + currentItem.items[0] + ' inside.');
                 var name = currentItem.items[0];
-                worldItems[name] = new Item(name,name,parseInt(currentItem.top) + 10,parseInt(currentItem.left) + 30,true);
-                console.log(worldItems[name])
+                worldItems[name] = new Item(name,name,parseInt(currentItem.top) + 10,parseInt(currentItem.left) + 30,true,false,true);
                 worldItems[name].place();
-
-                console.log(worldItems);
               }
             } else {
               input.print('It\'s locked!');
@@ -167,7 +162,13 @@ $(function(){
       'look' : function(item) {
         if (item) {
           if (worldItems.hasOwnProperty(item)) {
-            input.print(descriptions[item]) ///TODO ADD DESCRIPTIONS OBJECT
+            input.print(descriptions[item], 4000) ///TODO ADD DESCRIPTIONS OBJECT
+          } else if (item === 'inventory') {
+            var currentInventory = 'You have: ';
+            for (var item in guybrush.inventory) {
+              currentInventory += (guybrush.inventory[item]['name'] + ' ');
+            }
+            input.print(currentInventory,5000);
           } else {
             input.print('I don\'t see that here.');
           }
@@ -176,7 +177,7 @@ $(function(){
           for (var item in worldItems) {
             lookingAt += (worldItems[item]['name'] + ' ');
           }
-          input.print(lookingAt);
+          input.print(lookingAt, 5000);
         }
       },
       'take' : function(item) {
@@ -204,16 +205,38 @@ $(function(){
           if (currentItem.name === 'turtle') {
             input.print('Quit with the pushing!');
             setTimeout(function() {
-              input.print('Take this rubber chicken with a pulley in the middle and leave me alone.');
+              input.print('Take this rubber chicken with a pulley in the middle and leave me alone.', 3000);
             }, 2000);
             var chicken = new Item('chicken','chicken',0,0,true,false,true).store();
           } else {
             input.print('Pushing that does nothing.');
           }
         }
+      },
+      'use' :function(subj,obj) {
+        var currentSubj = guybrush.inventory[subj];
+        var currentObj = worldItems[obj];
+        console.log(currentSubj);
+        console.log(currentObj);
+        if (!currentSubj) {
+          input.print('I can\'t use something I don\'t have.');
+        } else if (!currentSubj.usable) {
+          input.print('I can\'t use that.')
+        } else if (!currentObj) {
+          input.print('What exactly do you want me to use that on?');
+        } else {
+          switch (currentSubj.name) {
+            case 'key':
+              if (currentObj.name === 'gate') {
+                currentObj.locked = false;
+                $('[data-name='+currentObj.name+']').addClass('open');
+                input.print('Opened the gate!');
+              }
+          }
+        }
       }
-
     }
+
 
     var input = {
       'parse' : function(input) {
@@ -222,41 +245,46 @@ $(function(){
       this.glow(inputArr[0]);
       switch (inputArr[0]) {
         case 'right':
-          actions.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+          guybrush.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
         case 'left':
-          actions.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+          guybrush.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
         case 'stop':
           guybrush.stop();
           break;
         case 'say':
-          this.print((inputArr[1]) ? actions.say(inputArr) : 'Hello!');
+          this.print((inputArr[1]) ? guybrush.say(inputArr) : 'Hello!');
           break;
         case 'open':
-          (!inputArr[1]) ? this.error() : actions.open(inputArr[1]);
+          (!inputArr[1]) ? this.error() : guybrush.open(inputArr[1]);
           break;
         case 'look':
-          actions.look((inputArr[1])?inputArr[1]:'');
+          guybrush.look((inputArr[1])?inputArr[1]:'');
           break;
         case 'take':
-          (inputArr[1]) ? actions.take(inputArr[1]) : this.print('What am I taking?');
+          (inputArr[1]) ? guybrush.take(inputArr[1]) : this.print('What am I taking?');
           break;
         case 'push':
-          (inputArr[1]) ? actions.push(inputArr[1]) : this.print('What am I pushing?');
+          (inputArr[1]) ? guybrush.push(inputArr[1]) : this.print('What am I pushing?');
           break;
-        //TODO ADD VERB ACTIONS
+        case 'use':
+          if (inputArr[1] && inputArr[2] === 'on' && inputArr[3]) {
+            guybrush.use(inputArr[1], inputArr[3]);
+          }
+          break;
 
         default: this.error();
       }
       },
-      'print' : function(msg) {
+      'print' : function(msg, time) {
+        var delay = (time) ? time : 2000;
         if (msg) {
           $message.css('opacity', 1);
           $message.html(msg)
           setTimeout(function() {
             $message.css('opacity', 0);
-          }, 2000)
+          }, delay)
         }
       },
       'capitalize' : function(word) {
@@ -269,6 +297,22 @@ $(function(){
           input.parse($inputField.val());
           $inputField.val('');
         }
+        });
+        $(window).on('keydown', function(e) {
+          if (e.keyCode === 37) {
+            e.preventDefault();
+            if (!guybrush.moving) {
+              guybrush.left();
+            }
+          } else if (e.keyCode === 39) {
+            e.preventDefault();
+            if (!guybrush.moving) {
+              guybrush.right();
+            }
+          } else if (e.keyCode === 40) {
+            e.preventDefault();
+            guybrush.stop();
+          }
         })
       },
       'glow': function(id) {
