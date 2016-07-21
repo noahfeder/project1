@@ -25,14 +25,19 @@ h1 {
 }
 
 .message {
-  min-width: 100px;
+  display: block;
   min-height: 40px;
+  max-width: 200px;
+  height: max-content;
+  width: max-content;
+  height: -webkit-max-content;
+  width: -webkit-max-content;
   background-image: url(img/text.png);
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   position: relative;
   font-size: 0.1rem;
-  padding: 10px;
+  padding: 11px;
   top: -54px;
   border: 4px solid transparent;
   opacity: 0;
@@ -62,7 +67,6 @@ h1 {
   border-image: url(img/border.png) 3 stretch;
   background-image: url(img/bg100.gif);
   background-size: cover;
-  overflow: hidden;
 }
 
 .guybrush {
@@ -172,6 +176,37 @@ h1 {
   height: 28px;
 }
 
+.sword {
+  background-image: url(img/sword.png);
+}
+
+.bomb {
+  background-image: url(img/bomb.png);
+}
+
+.bug {
+  background-image: url(img/bug.png);
+  background-size: contain;
+  width: 30px;
+  height: 60px;
+}
+
+.rat {
+  background-image: url(img/rat.png);
+  background-size: contain;
+  width: 30px;
+  height: 30px;
+}
+
+
+.key {
+  background-image: url(img/key.png);
+  background-size: contain;
+  width: 30px;
+  height: 30px;
+}
+
+
 .controls {
   height: 100px;
   top: 500px;
@@ -188,27 +223,44 @@ h1 {
 }
 
 .commands, .inventory {
-  border: 1px solid white;
   height: 90px;
+  padding: 5px;
   display: flex;
+}
+
+.commands {
+  flex: 0.6;
   flex-flow: column wrap;
 }
 
-.commands
+.inventory {
+  flex: 1;
+  flex-flow: row nowrap;
+}
 
 .command {
   flex: 1 0 40px;
-  border: 1px solid red;
+  border: 1px dotted #333;
+  text-shadow: 0px 0px transparent;
+  transition: text-shadow 0.2s;
+}
+
+.glowText {
+  text-shadow: 1px 1px white;
 }
 
 .stored {
-  flex: 1 0 50px;
-  border: 1px solid blue;
+  flex: 0 1 50px;
+  border: 1px dotted #444;
+  height: 90px;
+  background-size: contain;
+  position: relative;
 }
 
 input {
   height: 20px;
-  top: 610px;
+  top: 612px;
+  margin-top: 5px;
   background-color: black;
   -webkit-appearance:none;
   color: #6F6;

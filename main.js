@@ -5,7 +5,7 @@ $(function(){
 
     //name, className, width, height, top, left required for positioning; others are handled by prototypes
 
-    function Item(name, className, top, left, storable, openable, usable, container, items) {
+    function Item(name, className, top, left, storable, openable, usable, locked, container, items) {
       this.name = (name) ? String(name) : 'missingNo';
       this.className = (className) ? String(className) : 'img/missingNo.png';
       this.top = String(top) + 'px';
@@ -13,6 +13,7 @@ $(function(){
       this.storable = storable;
       this.openable = openable;
       this.usable = usable;
+      this.locked = locked;
       this.container = container;
       this.items = items;
     }
@@ -20,6 +21,7 @@ $(function(){
     Item.prototype.storable = false;
     Item.prototype.openable = false;
     Item.prototype.usable = false;
+    Item.prototype.locked = false;
     Item.prototype.container = false;
     Item.prototype.items =  [];
     Item.prototype.place = function() {
@@ -34,7 +36,10 @@ $(function(){
       $item.appendTo('.window');
     };
     Item.prototype.store = function() {
+      var $item = $('<div>');
+      $item.addClass(this.className + ' item stored');
       guybrush.inventory[this.name] = this;
+      $item.appendTo('.inventory');
     };
 
     var worldItems = {};
@@ -45,10 +50,10 @@ $(function(){
         //TODO MAYBE: Load in inventory, welcome splash screen?
       },
       'screen1': function() {
-        var chest = new Item('chest','chest green',300,100,false,true,false,true,['bug']).place();
-        var chest2 = new Item('chest2','chest red',300,200,false,true,false,true,['rat']).place();
-        var chest3 = new Item('chest3','chest blue',300,300,false,true,false,true,['key']).place();
-        var gate = new Item('gate','gate',380,605).place();
+        var chest = new Item('chest','chest green',300,100,false,true,false,false,true,['bug']).place();
+        var chest2 = new Item('chest2','chest red',300,200,false,true,false,false,true,['rat']).place();
+        var chest3 = new Item('chest3','chest blue',300,300,false,true,false,false,true,['key']).place();
+        var gate = new Item('gate','gate',380,605,false,true,false,true).place();
         var turtle = new Item('turtle','turtle',359,476).place();
         var bomb = new Item('bomb','bomb',0,0,true,false,true).store();
         var sword = new Item('sword','sword',0,0,true,false,true).store();
@@ -90,7 +95,10 @@ $(function(){
           $guybrush.addClass('right');
         }
       },
-      'inventory':{}
+      'inventory':{},
+      'near' : function(item) {
+        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 1000); //TODO BOUND
+      }
     }
 
     var actions = {
@@ -133,11 +141,74 @@ $(function(){
         } else if (!currentItem.openable) {
           input.print('I can\'t open that.');
         } else {
-          $('[data-name='+currentItem.name).addClass('open');
-          if (!currentItem.container) {
-            input.print('I opened it!');
+          if (guybrush.near(currentItem)) {
+            if (!currentItem.locked) {
+              $('[data-name='+currentItem.name+']').addClass('open');
+              currentItem.openable = false;
+              if (!currentItem.container) {
+                input.print('I opened it!');
+              } else {
+                input.print('There is a ' + currentItem.items[0] + ' inside.');
+                var name = currentItem.items[0];
+                worldItems[name] = new Item(name,name,parseInt(currentItem.top) + 10,parseInt(currentItem.left) + 30,true);
+                console.log(worldItems[name])
+                worldItems[name].place();
+
+                console.log(worldItems);
+              }
+            } else {
+              input.print('It\'s locked!');
+            }
           } else {
-            input.print('There is a ' + currentItem.items[0] + ' inside');
+            input.print('I can\'t reach that from here!');
+          } // close enough check
+        } // openable/exists chek
+      },
+      'look' : function(item) {
+        if (item) {
+          if (worldItems.hasOwnProperty(item)) {
+            input.print(descriptions[item]) ///TODO ADD DESCRIPTIONS OBJECT
+          } else {
+            input.print('I don\'t see that here.');
+          }
+        } else {
+          var lookingAt = 'You see: '
+          for (var item in worldItems) {
+            lookingAt += (worldItems[item]['name'] + ' ');
+          }
+          input.print(lookingAt);
+        }
+      },
+      'take' : function(item) {
+        var currentItem = worldItems[item];
+        if (worldItems.hasOwnProperty(item) && currentItem.storable) {
+          if (guybrush.near(currentItem)) {
+            currentItem.store();
+            $('[data-name='+currentItem.name+']').remove();
+            delete worldItems[item];
+            input.print('I took the ' + currentItem.name + '.');
+          } else {
+            input.print('I can\'t reach that from here.');
+          }
+        } else {
+          input.print('I can\'t pick that up.');
+        }
+      },
+      'push' : function(item) {
+        var currentItem = worldItems[item];
+        if (!currentItem) {
+          input.print('Can\'t push something that isn\'t there.');
+        } else if (!guybrush.near(currentItem)){
+          input.print('Too far to push!');
+        } else {
+          if (currentItem.name === 'turtle') {
+            input.print('Quit with the pushing!');
+            setTimeout(function() {
+              input.print('Take this rubber chicken with a pulley in the middle and leave me alone.');
+            }, 2000);
+            var chicken = new Item('chicken','chicken',0,0,true,false,true).store();
+          } else {
+            input.print('Pushing that does nothing.');
           }
         }
       }
@@ -148,6 +219,7 @@ $(function(){
       'parse' : function(input) {
       // Regex help from http://stackoverflow.com/questions/20731966/regex-remove-all-special-characters-except-numbers
       var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
+      this.glow(inputArr[0]);
       switch (inputArr[0]) {
         case 'right':
           actions.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
@@ -162,11 +234,16 @@ $(function(){
           this.print((inputArr[1]) ? actions.say(inputArr) : 'Hello!');
           break;
         case 'open':
-          if (!inputArr[1]) {
-            this.error();
-          } else {
-            actions.open(inputArr[1]);
-          }
+          (!inputArr[1]) ? this.error() : actions.open(inputArr[1]);
+          break;
+        case 'look':
+          actions.look((inputArr[1])?inputArr[1]:'');
+          break;
+        case 'take':
+          (inputArr[1]) ? actions.take(inputArr[1]) : this.print('What am I taking?');
+          break;
+        case 'push':
+          (inputArr[1]) ? actions.push(inputArr[1]) : this.print('What am I pushing?');
           break;
         //TODO ADD VERB ACTIONS
 
@@ -176,7 +253,7 @@ $(function(){
       'print' : function(msg) {
         if (msg) {
           $message.css('opacity', 1);
-          $message.text(msg)
+          $message.html(msg)
           setTimeout(function() {
             $message.css('opacity', 0);
           }, 2000)
@@ -194,6 +271,10 @@ $(function(){
         }
         })
       },
+      'glow': function(id) {
+        $('#'+id).addClass('glowText');
+        setTimeout(function(){$('#'+id).removeClass('glowText');},1000);
+      },
       'error': function() {
         this.print('I didn\'t quite get that.');
       }
@@ -201,7 +282,5 @@ $(function(){
 
     input.init();
     setup.screen1();
-    $('.kill').click(function(){
-      setup.clear();
-    });
+
 });
