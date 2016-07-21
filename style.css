@@ -39,8 +39,9 @@ h1 {
   -webkit-border-image: url(img/border.png) 3 stretch;
   -o-border-image: url(img/border.png) 3 stretch;
   border-image: url(img/border.png) 3 stretch;
-  background-image: url(img/bg2.png);
+  background-image: url(img/bg4.gif);
   background-size: cover;
+  overflow: hidden;
 }
 
 .guybrush {
@@ -53,6 +54,9 @@ h1 {
   width: 22px;
   height: 47px;
   top: 400px;
+  left: 0px;
+  transition: 1200ms left;
+  z-index: 69;
 }
 
 .guybrush.right {
@@ -94,6 +98,42 @@ h1 {
   background-position:-179px -63px;
   width: 32px;
   height: 46px;
+}
+
+.item {
+  transform-origin: -11px 100px;
+  position: absolute;
+  display: block;
+  background-repeat: no-repeat;
+}
+
+.chest {
+  background-image: url(img/chestclosed.png);
+  width: 90px;
+  height: 81px;
+  background-size: cover;
+}
+
+.chest.open {
+  background-image: url(img/chestopened.png);
+}
+
+.gate {
+  background-image: url(img/gate.png);
+  width: 58px;
+  height: 63px;
+  background-position: -209px -1px;
+  transform: scale(3,3);
+}
+
+.gate.open {
+  background-position: -209px -193px;
+}
+
+.turtle {
+  background-image: url(img/turtle.png);
+  width: 27px;
+  height: 28px;
 }
 
 .controls {
