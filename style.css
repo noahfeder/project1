@@ -63,6 +63,7 @@ h1 {
   border-image: url(img/bordertext.png) 3 stretch;
   border-radius: 5px;
   background-color: white;
+  z-index: 2;
 }
 
 .centerColumn {
@@ -117,7 +118,7 @@ h1 {
   width: 22px;
   height: 47px;
   top: 400px;
-  left: 0px;
+  left: 32px;
   z-index: 69;
 }
 
@@ -329,7 +330,6 @@ h1 {
 
 .command {
   flex: 1 0 40px;
-  text-shadow: 1px 1px transparent;
   transition: text-shadow 0.2s;
   text-align: center;
 }
@@ -344,7 +344,8 @@ h1 {
 }
 
 .glowText {
-  text-shadow: 1px 1px white;
+  filter: drop-shadow(2px 2px 1px white);
+  -webkit-filter: drop-shadow(2px 2px 1px white);
 }
 
 .stored {
@@ -395,4 +396,14 @@ input {
 
 .hidden {
   display: none;
+}
+
+@keyframes blink {
+  0% {opacity: 0;}
+  50% {opacity:1;}
+  100% {opacity: 0;}
+}
+
+.blink {
+  animation: blink 2s cubic-bezier(0,1,0,1) infinite;
 }

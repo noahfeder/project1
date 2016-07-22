@@ -5,10 +5,17 @@ $(function(){
   var $guybrush = $('.guybrush'),
       $message = $('.message'),
       $window = $('.window'),
+      $items = $('.item'),
       currentMsgDelay = 0,
       noSpace = function (string) {
         return string.replace(/ /g,'_');
-      };
+      },
+      command = {
+        'verb': '',
+        'subject': '',
+        'object': ''
+      },
+      clickTimer = 0;;
   //name, className, width, height, top, left required for positioning; others are handled by prototypes
 
   // Item constructor. Includes methods .place() for placing in window, and .store() for adding to inventory
@@ -41,13 +48,19 @@ $(function(){
     });
     $item.attr('data-name', noSpace(this.name));
     worldItems[this.name] = this;
+    $item.on('click',setup.nounListen);
     $item.appendTo($window);
   };
   Item.prototype.store = function() {
     var $item = $('<div>');
+    $item.attr('data-name', noSpace(this.name));
     $item.addClass(this.className + ' item stored');
     guybrush.inventory[this.name] = this;
+    $item.on('click',setup.nounListen);
+    console.log($item);
     $item.appendTo('.inventory');
+
+
   };
 
   // worldItems contains all objects in the $window, items are added via Item.place()
@@ -63,6 +76,7 @@ $(function(){
         setup.screen1();
         input.init();
         $window.off();
+        setup.addVerb();
       });
     },
     'init': function() {
@@ -87,9 +101,9 @@ $(function(){
     'screen2': function() {
       $window.addClass('screen2');
       var knife = new Item('knife','knife',366,474,true,false,true).place();
-      var statue = new Item('statue','statue red',235,150).place();
-      var statue2 = new Item('statue2','statue green',235,250).place();
-      var statue3 = new Item('statue3','statue blue',235,350).place();
+      var statue = new Item('statue of hera','statue red',235,150).place();
+      var statue2 = new Item('statue of athena','statue green',235,250).place();
+      var statue3 = new Item('statue of aphrodite','statue blue',235,350).place();
       var portal = new Item('portal','portal',0,458,false,true,false,true).place();
     },
     'screen3': function() {
@@ -124,6 +138,41 @@ $(function(){
         var $msg = $('<div>YOU WIN</div><br>');
         $msg.appendTo($window)
       }
+    },
+    'addVerb': function() {
+      $('.command').on('click',function() {
+        $items = $('.item');
+        console.log($items);
+        command.verb = $(this)['0'].id;
+        clickTimer = setTimeout(function() {
+          command.verb = '';
+        }, 10000)
+      });
+      $('.command').on('mouseover',function(){
+        input.glow($(this)['0'].id);
+      })
+    },
+    'nounListen': function() {
+      console.log($(this));
+      if (command.verb === 'use') {
+        if (command.subject) {
+          command.object = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+          input.parse(command.verb + ' ' + command.subject + ' on ' + command.object);
+          command.subject = '';
+          command.verb = '';
+          command.object = '';
+        } else {
+          command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+        }
+      } else if (command.verb) {
+        clearTimeout(clickTimer);
+        command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+        console.log(command);
+        input.parse(command.verb + ' ' + command.subject);
+        command.subject = '';
+        command.verb = '';
+        command.object = '';
+      }
     }
   };
 
@@ -134,13 +183,13 @@ $(function(){
     'inventory':{},                                     // holds Item objects, using Item.store()
     'steps': 0,                                         // for walking animation
     'statues' : [],                                     // for puzzle on screen 2
-    'winningStatues' : ['statue3','statue','statue2'],  // winning combos for statue puzzle
+    'winningStatues' : ['statue of aphrodite','statue of hera','statue of athena'],  // winning combos for statue puzzle
     'walk': function() {                                // scroll through walking animation classes
       $guybrush.removeClass('walking'+(this.steps));
       var left = parseInt($guybrush.css('left'));
       left += ($guybrush.hasClass('right')) ? -8 : 8;
-      left = (left < 5) ? 5 : left;
-      left = (left > 790) ? 790 : left;
+      left = (left < 32) ? 32 : left;
+      left = (left > 725) ? 725 : left;
       $guybrush.css('left', left +'px ');
       this.steps += (this.steps === 6) ? -5 : 1;
       $guybrush.addClass('walking'+(this.steps));
@@ -155,7 +204,7 @@ $(function(){
       }
     },
     'near' : function(item) {      // collision detection
-      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 60000);
+      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 120);
     },
     'say' : function(noun) {   // prepping statements to print
       return noun.charAt(0).toUpperCase() + noun.substring(1) + '.';
@@ -164,7 +213,9 @@ $(function(){
       var currentItem = worldItems[item];
       if (!currentItem) {
         input.print('That doesn\'t exist here.');
-      } else if (!currentItem.openable) {
+      } else if (item === 'turtle') {
+        input.print('Well that just seems rude.')
+      } else if (!currentItem.openable && item !== 'turtle') {
         input.print('I can\'t open that.');
       } else {
         if (guybrush.near(currentItem)) {
@@ -189,6 +240,7 @@ $(function(){
     },
     'look' : function(item) {                          // TODO add algorithm for printing lists
       if (item) {
+        console.log(item);
         if (worldItems.hasOwnProperty(item) || guybrush.inventory.hasOwnProperty(item)) {
           input.print(descriptions[item], 2000);
         } else if (item === 'inventory') {
@@ -197,6 +249,8 @@ $(function(){
             currentInventory.push(guybrush.inventory[item]['name']);
           }
           input.print(input.prepareList(currentInventory,'You have '),5000);
+        } else if (item == 'statues') {
+          input.print('I see a red statue of hera, a blue statue of athena, and a red statue of aphrodite.')
         } else {
           input.print('I don\'t see that here.');
         }
@@ -205,7 +259,6 @@ $(function(){
         for (var item in worldItems) {
           lookingAt.push((worldItems[item]['name']));
         }
-
         input.print(input.prepareList(lookingAt,'You see '), 5000);
       }
     },
@@ -213,8 +266,8 @@ $(function(){
       var currentItem = worldItems[item];
       if (worldItems.hasOwnProperty(item) && currentItem.storable) {
         if (guybrush.near(currentItem)) {
-          currentItem.store();
           $('[data-name='+noSpace(currentItem.name)+']').remove();
+          currentItem.store();
           delete worldItems[item];
           input.print('I took the ' + currentItem.name + '.');
         } else {
@@ -239,7 +292,7 @@ $(function(){
             input.print('Take this rubber chicken with a pulley in the middle and leave me alone.', 3000);
           }, 2000);
           var chicken = new Item('chicken','chicken',0,0,true,false,true).store();
-        } else if (currentItem.className.indexOf('statue') > -1 && !currentItem.locked) {
+        } else if (currentItem.name.indexOf('statue') > -1 && !currentItem.locked) {
             guybrush.statues.push(currentItem.name);
             var currentTop = parseInt($('[data-name='+noSpace(currentItem.name)+']').css('top'));
             $('[data-name='+noSpace(currentItem.name)+']').css('top', String(currentTop - 10) + 'px');
@@ -381,8 +434,10 @@ $(function(){
     var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
     var verb = inputArr[0];
     var noun = inputArr.slice(1).join(' ');
-    console.log(verb);
-    console.log(noun);
+    //aliases
+    noun = (noun.indexOf('blue statue') > -1) ? 'statue of athena' : noun;
+    noun = (noun.indexOf('green statue') > -1) ? 'statue of hera' : noun;
+    noun = (noun.indexOf('red statue') > -1) ? 'statue of aphrodite' : noun;
     this.glow(verb);
     switch (verb) {
       case 'say': this.print((noun) ? guybrush.say(noun) : 'Hello!');
@@ -478,8 +533,7 @@ $(function(){
             $window.removeClass('screen1 screen2');
             setup.clear();
             setup.init();
-            setup.screen3();
-            setup.victory();
+            setup.screen2();
         }
       })
     },
@@ -513,9 +567,9 @@ $(function(){
 
   // dscriptions for all items
   var descriptions = {
-    'statue' : 'This seemingly magical statue glows with a magical green energy. How boring.',
-    'statue2': 'This red statue is pretty cool. But not the coolest.',
-    'statue3': 'Wow! This is clearly one of the best magical statues ever.',
+    'statue of hera' : 'This seemingly magical statue glows with a magical green energy. How boring.',
+    'statue of athena': 'This blue statue is pretty cool. But not the coolest.',
+    'statue of aphrodite': 'Wow! This red lady is clearly one of the best magical statues ever.',
     'bomb'   : 'Powerful. Explosive. Free.',
     'rat'    : 'Gross! It probably has scurvy or something.',
     'sword'  : 'I feel strong just looking at this bad-ass sword.',
