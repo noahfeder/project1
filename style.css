@@ -93,7 +93,6 @@ h1 {
   height: 47px;
   top: 400px;
   left: 0px;
-  transition: 1200ms left;
   z-index: 69;
 }
 
@@ -247,6 +246,29 @@ h1 {
 
 .portal.open {
   background-image: url(img/dooropen.png);
+}
+
+@keyframes bossFloat {
+  25% {left: 450px;}
+  50% {top: 20px;}
+  75% {left: 466px;}
+}
+
+@-webkit-keyframes bossFloat {
+  25% {left: 450px;}
+  50% {top: 20px;}
+  75% {left: 466px;}
+}
+
+.boss {
+  background-image: url(img/boss.png);
+  background-size: cover;
+  width: 320px;
+  height: 280px;
+  animation: bossFloat 2s ease infinite;
+  -webkit-animation: bossFloat 2s ease infinite;
+  filter: drop-shadow(0 0 10px red);
+  -webkit-filter: drop-shadow(0 0 10px red);
 }
 
 .controls {

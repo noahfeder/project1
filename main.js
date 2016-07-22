@@ -60,11 +60,8 @@ $(function(){
         var turtle = new Item('turtle','turtle',359,476).place();
         var bomb = new Item('bomb','bomb',0,0,true,false,true).store();
         var sword = new Item('sword','sword',0,0,true,false,true).store();
-        console.log(worldItems);
-        console.log(guybrush.inventory);
       },
       'screen2': function() {
-        //TODO SECOND SCREEN
         $('.window').addClass('screen2');
         var knife = new Item('knife','knife',366,474,true,false,true).place();
         var statue = new Item('statue','statue red',235,150).place();
@@ -73,8 +70,8 @@ $(function(){
         var portal = new Item('portal','portal',0,458,false,true,false,true).place();
       },
       'screen3': function() {
-        //TODO FINAL SCREEN
         $('.window').addClass('screen3');
+        var boss = new Item('boss','boss',0,458).place();
       },
       'clear' : function() {
         // TODO LOADING SCREEN
@@ -93,19 +90,18 @@ $(function(){
     var guybrush = {
       'inventory':{},
       'alive': true,
-      'moving': 0,
-      'rightStatus': false,
+      'steps': 0,
       'statues' : [],
-      'winningStatues' : ['statue3','statue1','statue2'],
+      'winningStatues' : ['statue3','statue','statue2'],
       'walk': function() {
-        var i = 0
-        if (!guybrush.moving) {
-          guybrush.moving = setInterval(function(){
-            $guybrush.removeClass('walking'+i);
-            i += (i === 6) ? -5 : 1;
-            $guybrush.addClass('walking'+i);
-          },150);
-        }
+        $guybrush.removeClass('walking'+(this.steps));
+        var left = parseInt($guybrush.css('left'));
+        left += ($guybrush.hasClass('right')) ? -8 : 8;
+        left = (left < 5) ? 5 : left;
+        left = (left > 790) ? 790 : left;
+        $guybrush.css('left', left +'px ');
+        this.steps += (this.steps === 6) ? -5 : 1;
+        $guybrush.addClass('walking'+(this.steps));
       },
       'stop': function() {
         clearInterval(guybrush.moving);
@@ -118,21 +114,7 @@ $(function(){
       },
       'near' : function(item) {
         console.log(Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left));
-        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 60); //TODO BOUND
-      },
-      'right': function() {
-        $guybrush.removeClass('right');
-        guybrush.walk();
-        var curr = parseInt($guybrush.css('left'));
-        curr = (curr > 750) ? 750 : curr + 50;
-        $guybrush.css('left', curr+'px');
-      },
-      'left': function() {
-        $guybrush.addClass('right');
-        guybrush.walk();
-        var curr = parseInt($guybrush.css('left'));
-        curr = (curr < 35) ? 35 : curr - 50;
-        $guybrush.css('left', curr+'px');
+        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 60);
       },
       'say' : function(inputArr) {
         var statement = inputArr.reduce(function(prev,curr,ind){
@@ -175,8 +157,8 @@ $(function(){
       },
       'look' : function(item) {
         if (item) {
-          if (worldItems.hasOwnProperty(item)) {
-            input.print(descriptions[item], 4000) ///TODO ADD DESCRIPTIONS OBJECT
+          if (worldItems.hasOwnProperty(item) || guybrush.inventory.hasOwnProperty(item)) {
+            input.print(descriptions[item], 2000);
           } else if (item === 'inventory') {
             var currentInventory = 'You have: ';
             for (var item in guybrush.inventory) {
@@ -238,13 +220,16 @@ $(function(){
                 worldItems.portal.locked = false;
                 setTimeout(function() {
                   input.print('As the final statue shudders to a halt, the portal opens.')
+                  $('.portal').addClass('open');
                 },2001)
-                $('.portal').addClass('open');
               }
           } else {
             input.print('Pushing that does nothing.');
           }
         }
+      },
+      'hasChicken' : function() {
+        return this.inventory.hasOwnProperty('chicken');
       },
       'use' :function(subj,obj) {
         var currentSubj = guybrush.inventory[subj];
@@ -272,19 +257,57 @@ $(function(){
                 input.print('What do people usually use keys on?');
               }
               break;
-            case 'bug': input.print('What am I supposed to do with a stupid bug?');
+            case 'bug':
+              if (currentObj.name === 'boss') {
+                if (!this.hasChicken()) {
+                  setup.gameOver('A bug is useless against the power of the Beholder.');
+                } else {
+                  $('.bug').remove();
+                  delete this.inventory.bug;
+                  input.print('The Beholder burns the bug to smithereens. Try again!');
+                }
+              } else {
+                  input.print('What am I supposed to do with a stupid bug?');
+              }
               break;
-            case 'rat': input.print('Rats are useless.');
+            case 'rat':
+                if (currentObj.name === 'boss') {
+                  if (!this.hasChicken()) {
+                    setup.gameOver('The rat joined forces with the Beholder to murder you.');
+                  } else {
+                    $('.rat').remove();
+                    delete this.inventory.rat;
+                    input.print('The rat scampers off in fear. Try again!');
+                  }
+                } else {
+                  input.print('Rats are useless.');
+                }
               break;
             case 'bomb':
-              if (currentObj.name === 'turtle') {
+              if (currentObj.name === 'boss') {
+                if (!this.hasChicken()) {
+                  setup.gameOver('The Beholder swallowed the bomb. And you.');
+                } else {
+                  $('.bomb').remove();
+                  delete this.inventory.bomb;
+                  input.print('The bomb appears to do little damage. Try again!');
+                }
+              } else if (currentObj.name === 'turtle') {
                 setup.gameOver('Turtles have shells! The bomb bounced off and killed you.');
               } else {
                 input.print('Are you insane?? Throwing a bomb in this peaceful place?', 3000);
               }
               break;
             case 'sword':
-              if (currentObj.name === 'gate') {
+              if (currentObj.name === 'boss') {
+                if (!this.hasChicken()) {
+                  setup.gameOver('The sword bounces off the Beholder and beheads you cleanly.');
+                } else {
+                  $('.sword').remove();
+                  delete this.inventory.sword;
+                  input.print('The Beholder melts the sword easily. Try again!');
+                }
+              } else if (currentObj.name === 'gate') {
                 input.print('My sword can\'t open the gate.');
               } else if (currentObj.name === 'turtle') {
                 input.print('He doesn\'t seemed bothered by it at all.');
@@ -292,12 +315,26 @@ $(function(){
                 input.print('No point in chopping that up.');
               }
               break;
+            case 'knife':
+              if (currentObj.name === 'boss') {
+                if (!this.hasChicken()) {
+                  setup.gameOver('Don\'t bring a knife to a Beholder fight.');
+                } else {
+                  $('.knife').remove();
+                  delete this.inventory.knife;
+                  input.print('You call that a knife? Try again!');
+                }
+              } else {
+                input.print('Don\'t cut that!');
+              }
+              break;
             case 'chicken':
-              if (currentObj.name ==='') {//TODO  BOSS BATTLE
-                // TODO VICTORY
+              if (currentObj.name ==='boss') {
+                setup.victory(); //TODO MAKE VICTORY
               } else {
                 input.print('It\'s a rubber chicken with a pulley in the middle. It seems totally useless.');
               }
+              break;
 
           }
         }
@@ -311,12 +348,12 @@ $(function(){
       var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
       this.glow(inputArr[0]);
       switch (inputArr[0]) {
-        case 'right': guybrush.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
-          break;
-        case 'left': guybrush.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
-          break;
-        case 'stop': guybrush.stop();
-          break;
+        // case 'right': guybrush.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+        //   break;
+        // case 'left': guybrush.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+        //   break;
+        // case 'stop': guybrush.stop();
+        //   break;
         case 'say': this.print((inputArr[1]) ? guybrush.say(inputArr) : 'Hello!');
           break;
         case 'open': (!inputArr[1]) ? this.error() : guybrush.open(inputArr[1]);
@@ -362,36 +399,38 @@ $(function(){
         $(window).on('keydown', function(e) {
           if (e.keyCode === 37) {
             e.preventDefault();
-            guybrush.left();
+            $guybrush.addClass('right');
+            guybrush.walk();
           } else if (e.keyCode === 39) {
             e.preventDefault();
-            if ($guybrush.offset().left > 800 && !worldItems.gate.locked && $('.window').hasClass('screen1')) {
-              setup.clear();
-              setup.welcome();
-              setup.screen2();
-            } else if ($guybrush.offset().left > 800 && !worldItems.portal.locked && $('.window').hasClass('screen1')) {
-              setup.clear();
-              setup.welcome();
-              setup.screen3();
+            if ($('.window').hasClass('screen1')) {
+              if ($guybrush.offset().left > 800 && !worldItems.gate.locked) {
+                $('.window').removeClass('screen1')
+                setup.clear();
+                setup.welcome();
+                setup.screen2();
+              }
+            } else if ($('.window').hasClass('screen2')) {
+              if ($guybrush.offset().left > 800 && !worldItems.portal.locked) {
+                $('.window').removeClass('screen2')
+                setup.clear();
+                setup.welcome();
+                setup.screen3();
+              }
             }
-            guybrush.right();
+            $guybrush.removeClass('right');
+            guybrush.walk();
           }
         });
         $(window).on('keyup', function(e){
-          if (e.keyCode === 37) {
+          if (e.keyCode === 37 || e.keyCode === 39) {
             e.preventDefault();
-            if (guybrush.moving) {
-              guybrush.stop();
-            }
-          } else if (e.keyCode === 39) {
-            e.preventDefault();
-            if (guybrush.moving) {
-              guybrush.stop();
-            }
+            guybrush.stop();
           } else if (e.keyCode === 38) {
+              $('.window').removeClass('screen1 screen2');
               setup.clear();
               setup.welcome();
-              setup.screen2();
+              setup.screen3();
           }
         })
       },
@@ -402,6 +441,25 @@ $(function(){
       'error': function() {
         this.print('I didn\'t quite get that.');
       }
+    }
+
+    var descriptions = {
+      'statue' : 'This seemingly magical statue glows with a magical green energy. How boring.',
+      'statue2': 'This red statue is pretty cool. But not the coolest.',
+      'statue3': 'Wow! This is clearly one of the best magical statues ever.',
+      'bomb'   : 'Powerful. Explosive. Free.',
+      'rat'    : 'Gross! It probably has scurvy or something.',
+      'sword'  : 'I feel strong just looking at this bad-ass sword.',
+      'boss'   : 'Holy $%!&, that\'s the second biggest Beholder that I\'ve ever seen!',
+      'chest'  : 'Is it... oozing?',
+      'chest2' : 'It smells terrible.',
+      'chest3' : 'Ugh, another chest? Who designed this game?',
+      'turtle' : 'Seems like an amiable fellow. I shouldn\'t push him.',
+      'gate'   : 'Darn, if only I had a key.',
+      'key'    : 'Ooh, shiny!',
+      'knife'  : 'Is this a knife?',
+      'portal' : 'If only there were some magical items nearby to open this portal. Sigh.',
+      'chicken': 'Totally useless.'
     }
     setup.welcome();
     input.init();

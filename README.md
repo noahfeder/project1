@@ -4,15 +4,15 @@
 
 ### User Experiences:
 
-* See available commands and inventory
+* See available commands and inventory DONE
 
-* Type commands for Guybrush, our protagonist
+* Type commands for Guybrush, our protagonist DONE
 
-* Control Guybrush on the screen either through arrow keys or typed commands
+* Control Guybrush on the screen either through arrow keys  DONE `scrapped typed commands`
 
-* Win when you arrive at the trophy
+* Win when you arrive at the trophy DONE `changed to boss`
 
-* Die at two or three particular challenge points
+* Die at two or three particular challenge points DONE
 
 
 
@@ -31,33 +31,33 @@ A game that requires the player to textually interact with an on-screen characte
 2. Actions/verbs:
 
      ```
-     Verbs can take 0, 1, or 2 arguments
+     Verbs can take 0, 1, or 2 arguments DONE
      ```
 
   * Left/right/stop DONE
-  * Open/close
-  * Use X on Y
-  * Pick up
-  * Look
+  * Open DONE
+  * Use X on Y DONE
+  * Grab DONE
+  * Look DONE
   * Say DONE
-  * Inventory
-  * Push
+  * Inventory DONE
+  * Push DONE
 
 3. Objects
 
   1. First screen
-    * Gates
+    * Gates DONE
     * Chests DONE
     * Turtle DONE
-    * Chicken
+    * Chicken DONE
   2. Second Screen
-    * Podiums
-    * Knife
+    * Statues DONE
+    * Knife DONE
   3. Third screen
-    * Final Boss
+    * Final Boss DONE
   4. Starting inventory
-    * Sword
-    * Bomb
+    * Sword DONE
+    * Bomb DONE
 
       ```
       Object properties:
@@ -74,12 +74,19 @@ A game that requires the player to textually interact with an on-screen characte
         ```
 
 4. Input actions
-  * take in and parse text
-  * prepare response
-  * print response
-  * [arrow keys to walk]
+  * take in and parse text DONE
+  * prepare response DONE
+  * print response DONE
+  * [arrow keys to walk] DONE
 
 5. "Plot"
-  * Find key in chest, interact with Turtle
-  * Push buttons in right order, pick up Knife
-  * Fight boss!
+  * Find key in chest, interact with Turtle DONE
+  * Push buttons in right order, pick up Knife DONE
+  * Fight boss! DONE
+
+6. STRETCH GOALS / TODO
+  * Additional screen???
+  * Welcome screen/instructions
+  * Loading screen
+  * Victory screen
+  * sounds????
