@@ -85,11 +85,14 @@ A game that requires the player to textually interact with an on-screen characte
   * Fight boss! DONE
 
 6. STRETCH GOALS / TODO
-  * Additional screen???
   * Welcome screen/instructions
   * Loading screen
-  * Victory screen
-  * sounds????
-  * Fix message box
+  * Victory screen!!
+  * Fix message box!!
   * change rat to something??? uzi??? shield?
   * name Hera Athena Aphrodite
+  * more descriptive names in general
+  * change .place() method to take position
+    * change Item constructor to obj
+  * sounds????
+  * Additional screen???
