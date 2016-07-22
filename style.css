@@ -1,9 +1,25 @@
+@font-face {
+  font-family: 'arcade';
+  src: url(arcade.ttf);
+}
+
+/*
+* This font is copyright (c) Jakob Fischer at www.pizzadude.dk,  all rights reserved. Do not distribute without the author's permission.
+* Use this font for non-commercial use only! If you plan to use it for commercial purposes, contact me before doing so!
+* For more original fonts take a look at www.pizzadude.dk
+* Have fun and enjoy!
+* Jakob Fischer
+* jakob@pizzadude.dk
+* www.pizzadude.dk
+*/
+
 body {
   margin: 0 auto;
   padding: 0;
   border: 0;
   box-sizing: border-box;
-  font-family: courier;
+  font-family: 'arcade', sans-serif;
+  letter-spacing: 3px;
   background-color: black;
   color: green;
   overflow: hidden;
@@ -21,35 +37,32 @@ body {
 
 h1 {
   text-align: center;
-  line-height: 2.5em;
+  line-height: 1em;
   width: 806px;
   width: 100%;
 }
 
 .message {
   display: block;
-  min-height: 40px;
-  max-width: 200px;
+  left: 50%;
   height: max-content;
   width: max-content;
   height: -webkit-max-content;
   width: -webkit-max-content;
-  background-image: url(img/text.png);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  position: relative;
-  font-size: 0.1rem;
+  max-width: 400px;
+  position: fixed;
+  font-size: 20px;
   padding: 11px;
-  top: -54px;
-  border: 4px solid transparent;
   opacity: 0;
   word-wrap: break-word;
-}
-
-.right .message {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-  background-image: url(img/text2.png);
+  border-style: solid;
+  border-width: 3px;
+  -moz-border-image: url(img/bordertext.png) 3 stretch;
+  -webkit-border-image: url(img/bordertext.png) 3 stretch;
+  -o-border-image: url(img/bordertext.png) 3 stretch;
+  border-image: url(img/bordertext.png) 3 stretch;
+  border-radius: 5px;
+  background-color: white;
 }
 
 .centerColumn {
@@ -60,21 +73,34 @@ h1 {
 
 .window {
   height: 400px;
-  top: 100px;
+  top: 50px;
   border-style: solid;
   border-width: 3px;
   -moz-border-image: url(img/border.png) 3 stretch;
   -webkit-border-image: url(img/border.png) 3 stretch;
   -o-border-image: url(img/border.png) 3 stretch;
   border-image: url(img/border.png) 3 stretch;
-  background-image: url(img/bg100.gif);
+  background-repeat: no-repeat;
   background-size: cover;
+}
+
+.titleText, .welcomeText {
+  text-align: center;
+  line-height: 2em;
+  font-size: 18px;
+}
+
+.titleText {
+  font-size: 50px;
+}
+
+.screen1 {
+  background-image: url(img/bg100.gif);
 }
 
 .screen2 {
   background-image: url(img/bg9.gif);
   background-position: -50x 0px;
-  background-repeat: no-repeat;
 }
 
 .screen3 {
@@ -271,7 +297,7 @@ h1 {
 
 .controls {
   height: 100px;
-  top: 500px;
+  top: 450px;
   border: 1px solid blue;
   border-style: solid;
   border-width: 3px;
@@ -298,13 +324,23 @@ h1 {
 .inventory {
   flex: 1;
   flex-flow: row nowrap;
+  align-items: center;
 }
 
 .command {
   flex: 1 0 40px;
-  border: 1px dotted #333;
   text-shadow: 1px 1px transparent;
   transition: text-shadow 0.2s;
+  text-align: center;
+}
+
+#inventory {
+  max-width: 5px;
+  word-wrap: break-word;
+  font-size: 10px;
+  padding-right: 18px;
+  margin-top: -6px;
+  line-height: 11px;;
 }
 
 .glowText {
@@ -312,19 +348,51 @@ h1 {
 }
 
 .stored {
-  flex: 0 1 50px;
-  border: 1px dotted #444;
-  height: 90px;
+  flex: 0 1 55px;
+  height: 84px;
   background-size: contain;
   position: relative;
+  margin: 10px;
 }
 
 input {
   height: 20px;
-  top: 612px;
+  top: 580px;
   margin-top: 5px;
   background-color: black;
   -webkit-appearance:none;
   color: #6F6;
   border-image: none;
+}
+
+.victory {
+  font-size: 75px;
+  text-align: center;
+  display: block;
+  letter-spacing: 25px;
+  background-image: url(img/rainbow.gif);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.controls.victory {
+  font-size: 50px;
+  letter-spacing: 2px;
+}
+
+.controls.gameover {
+  font-size: 75px;
+  text-align: center;
+  display: block;
+  letter-spacing: 25px;
+}
+
+.window.gameover {
+  text-align: center;
+  font-size: 40px;
+  background: none;
+}
+
+.hidden {
+  display: none;
 }
