@@ -72,13 +72,23 @@ h1 {
   background-size: cover;
 }
 
+.screen2 {
+  background-image: url(img/bg9.gif);
+  background-position: -50x 0px;
+  background-repeat: no-repeat;
+}
+
+.screen3 {
+  background-image: url(img/bg5.gif);
+}
+
 .guybrush {
   background-image: url('img/guybrush.png');
   background-repeat: no-repeat;
   transform: scale(2,2);
   transform-origin: -11px 100px;
   position: relative;
-  background-position: -6px -3px;
+  background-position: -35px -63px;
   width: 22px;
   height: 47px;
   top: 400px;
@@ -146,17 +156,17 @@ h1 {
   background-image: url(img/chestopened.png);
 }
 
-.chest.green {
+.green {
   filter: hue-rotate(110deg);
   -webkit-filter: hue-rotate(110deg);
 }
 
-.chest.blue {
+.blue {
   filter: hue-rotate(240deg);
   -webkit-filter: hue-rotate(240deg);
 }
 
-.chest.red {
+.red {
   filter: hue-rotate(350deg) saturate(1.7);
   -webkit-filter: hue-rotate(35x0deg) saturate(1.7);
 }
@@ -214,6 +224,19 @@ h1 {
   height: 30px;
 }
 
+.statue {
+  background-image: url(img/statue.gif);
+  background-size: cover;
+  width: 96px;
+  height: 144px;
+}
+
+.knife {
+  background-image: url(img/knife.png);
+  background-size: cover;
+  width: 35px;
+  height: 35px;
+}
 
 .controls {
   height: 100px;

@@ -7,7 +7,7 @@ $(function(){
 
     function Item(name, className, top, left, storable, openable, usable, locked, container, items) {
       this.name = (name) ? String(name) : 'missingNo';
-      this.className = (className) ? String(className) : 'img/missingNo.png';
+      this.className = (className) ? String(className) : 'missingNo';
       this.top = String(top) + 'px';
       this.left = String(left)+ 'px';
       this.storable = storable;
@@ -43,12 +43,14 @@ $(function(){
     };
 
     var worldItems = {};
-    // initializer to set up items for each screen
 
     var setup = {
       'welcome': function() {
         //TODO MAYBE: Load in inventory, welcome splash screen?
-
+        $guybrush = $('<div class="guybrush"></div>');
+        $message = $('<div class="message"></div>');
+        $guybrush.append($message);
+        $guybrush.appendTo('.window');
       },
       'screen1': function() {
         var chest = new Item('chest','chest green',300,100,false,true,false,false,true,['bug']).place();
@@ -63,13 +65,24 @@ $(function(){
       },
       'screen2': function() {
         //TODO SECOND SCREEN
+        $('.window').addClass('screen2');
+        var knife = new Item('knife','knife',366,474,true,false,true).place();
+        var statue = new Item('statue','statue red',235,150).place();
+        var statue2 = new Item('statue2','statue green',235,250).place();
+        var statue3 = new Item('statue3','statue blue',235,350).place();
+        var door = new Item('door','door',300,700,false,true,false,true).place();
       },
       'screen3': function() {
         //TODO FINAL SCREEN
+        $('.window').addClass('screen3');
       },
       'clear' : function() {
         // TODO LOADING SCREEN
-        $('.item').remove();
+        $('.window').empty();
+      },
+      'gameOver' : function(msg) {
+        $('.window').empty().css({'background-image': 'url(img/gameover.gif)','background-position':'0px -50px','text-align':'center'});
+        $('.window').html(msg+'<br>Reload the page to restart.');
       }
     };
 
@@ -77,16 +90,19 @@ $(function(){
     // Guybrush object! Contains statuses and methods
 
     var guybrush = {
+      'inventory':{},
       'alive': true,
       'moving': 0,
       'rightStatus': false,
       'walk': function() {
         var i = 0
-        guybrush.moving = setInterval(function(){
-          $guybrush.removeClass('walking'+i);
-          i += (i === 6) ? -5 : 1;
-          $guybrush.addClass('walking'+i);
-        },200);
+        if (!guybrush.moving) {
+          guybrush.moving = setInterval(function(){
+            $guybrush.removeClass('walking'+i);
+            i += (i === 6) ? -5 : 1;
+            $guybrush.addClass('walking'+i);
+          },200);
+        }
       },
       'stop': function() {
         clearInterval(guybrush.moving);
@@ -97,27 +113,22 @@ $(function(){
           $guybrush.addClass('right');
         }
       },
-      'inventory':{},
       'near' : function(item) {
         console.log(Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left));
-        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 60000); //TODO BOUND
+        return (Math.abs($('[data-name='+item.name+']').offset().left - $guybrush.offset().left) < 60); //TODO BOUND
       },
       'right': function() {
-        guybrush.stop();
         $guybrush.removeClass('right');
         guybrush.walk();
-        setTimeout(guybrush.stop,1200);
         var curr = parseInt($guybrush.css('left'));
-        curr = (curr > 750) ? 750 : curr + 35;
+        curr = (curr > 750) ? 750 : curr + 50;
         $guybrush.css('left', curr+'px');
       },
       'left': function() {
-        guybrush.stop();
         $guybrush.addClass('right');
         guybrush.walk();
-        setTimeout(guybrush.stop,1200);
         var curr = parseInt($guybrush.css('left'));
-        curr = (curr < 35) ? 35 : curr - 35;
+        curr = (curr < 35) ? 35 : curr - 50;
         $guybrush.css('left', curr+'px');
       },
       'say' : function(inputArr) {
@@ -224,14 +235,48 @@ $(function(){
           input.print('I can\'t use that.')
         } else if (!currentObj) {
           input.print('What exactly do you want me to use that on?');
+        } else if (!guybrush.near(currentObj)){
+          input.print('That is too far away.');
         } else {
           switch (currentSubj.name) {
             case 'key':
               if (currentObj.name === 'gate') {
                 currentObj.locked = false;
                 $('[data-name='+currentObj.name+']').addClass('open');
+                $('.'+currentSubj.name).remove();
+                delete guybrush.inventory[subj];
                 input.print('Opened the gate!');
+              } else {
+                input.print('What do people usually use keys on?');
               }
+              break;
+            case 'bug': input.print('What am I supposed to do with a stupid bug?');
+              break;
+            case 'rat': input.print('Rats are useless.');
+              break;
+            case 'bomb':
+              if (currentObj.name === 'turtle') {
+                setup.gameOver('Turtles have shells! The bomb bounced off and killed you.');
+              } else {
+                input.print('Are you insane?? Throwing a bomb in this peaceful place?', 3000);
+              }
+              break;
+            case 'sword':
+              if (currentObj.name === 'gate') {
+                input.print('My sword can\'t open the gate.');
+              } else if (currentObj.name === 'turtle') {
+                input.print('He doesn\'t seemed bothered by it at all.');
+              } else {
+                input.print('No point in chopping that up.');
+              }
+              break;
+            case 'chicken':
+              if (currentObj.name ==='') {//TODO  BOSS BATTLE
+                // TODO VICTORY
+              } else {
+                input.print('It\'s a rubber chicken with a pulley in the middle. It seems totally useless.');
+              }
+
           }
         }
       }
@@ -244,33 +289,27 @@ $(function(){
       var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
       this.glow(inputArr[0]);
       switch (inputArr[0]) {
-        case 'right':
-          guybrush.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+        case 'right': guybrush.right((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
-        case 'left':
-          guybrush.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
+        case 'left': guybrush.left((parseInt(inputArr[1]))?(parseInt(inputArr[1])):'');
           break;
-        case 'stop':
-          guybrush.stop();
+        case 'stop': guybrush.stop();
           break;
-        case 'say':
-          this.print((inputArr[1]) ? guybrush.say(inputArr) : 'Hello!');
+        case 'say': this.print((inputArr[1]) ? guybrush.say(inputArr) : 'Hello!');
           break;
-        case 'open':
-          (!inputArr[1]) ? this.error() : guybrush.open(inputArr[1]);
+        case 'open': (!inputArr[1]) ? this.error() : guybrush.open(inputArr[1]);
           break;
-        case 'look':
-          guybrush.look((inputArr[1])?inputArr[1]:'');
+        case 'look': guybrush.look((inputArr[1])?inputArr[1]:'');
           break;
-        case 'take':
-          (inputArr[1]) ? guybrush.take(inputArr[1]) : this.print('What am I taking?');
+        case 'take': (inputArr[1]) ? guybrush.take(inputArr[1]) : this.print('What am I taking?');
           break;
-        case 'push':
-          (inputArr[1]) ? guybrush.push(inputArr[1]) : this.print('What am I pushing?');
+        case 'push': (inputArr[1]) ? guybrush.push(inputArr[1]) : this.print('What am I pushing?');
           break;
         case 'use':
           if (inputArr[1] && inputArr[2] === 'on' && inputArr[3]) {
             guybrush.use(inputArr[1], inputArr[3]);
+          } else {
+            this.print('Try typing "Use X on Y" this time.');
           }
           break;
 
@@ -301,17 +340,32 @@ $(function(){
         $(window).on('keydown', function(e) {
           if (e.keyCode === 37) {
             e.preventDefault();
-            if (!guybrush.moving) {
-              guybrush.left();
+            guybrush.left();
+          } else if (e.keyCode === 39) {
+            e.preventDefault();
+            if ($guybrush.offset().left > 800 && !worldItems.gate.locked) {
+              setup.clear();
+              setup.welcome();
+              setup.screen2();
+            }
+            guybrush.right();
+          }
+        });
+        $(window).on('keyup', function(e){
+          if (e.keyCode === 37) {
+            e.preventDefault();
+            if (guybrush.moving) {
+              guybrush.stop();
             }
           } else if (e.keyCode === 39) {
             e.preventDefault();
-            if (!guybrush.moving) {
-              guybrush.right();
+            if (guybrush.moving) {
+              guybrush.stop();
             }
-          } else if (e.keyCode === 40) {
-            e.preventDefault();
-            guybrush.stop();
+          } else if (e.keyCode === 38) {
+               setup.clear();
+              setup.welcome();
+              setup.screen2();
           }
         })
       },
@@ -323,7 +377,7 @@ $(function(){
         this.print('I didn\'t quite get that.');
       }
     }
-
+    setup.welcome();
     input.init();
     setup.screen1();
 
