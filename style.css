@@ -238,6 +238,17 @@ h1 {
   height: 35px;
 }
 
+.portal {
+  background-image: url(img/doorclosed.png);
+  background-size: cover;
+  width: 400px;
+  height: 400px;
+}
+
+.portal.open {
+  background-image: url(img/dooropen.png);
+}
+
 .controls {
   height: 100px;
   top: 500px;

@@ -70,7 +70,7 @@ $(function(){
         var statue = new Item('statue','statue red',235,150).place();
         var statue2 = new Item('statue2','statue green',235,250).place();
         var statue3 = new Item('statue3','statue blue',235,350).place();
-        var door = new Item('door','door',300,700,false,true,false,true).place();
+        var portal = new Item('portal','portal',0,458,false,true,false,true).place();
       },
       'screen3': function() {
         //TODO FINAL SCREEN
@@ -79,6 +79,7 @@ $(function(){
       'clear' : function() {
         // TODO LOADING SCREEN
         $('.window').empty();
+        worldItems = {};
       },
       'gameOver' : function(msg) {
         $('.window').empty().css({'background-image': 'url(img/gameover.gif)','background-position':'0px -50px','text-align':'center'});
@@ -94,6 +95,8 @@ $(function(){
       'alive': true,
       'moving': 0,
       'rightStatus': false,
+      'statues' : [],
+      'winningStatues' : ['statue3','statue1','statue2'],
       'walk': function() {
         var i = 0
         if (!guybrush.moving) {
@@ -101,7 +104,7 @@ $(function(){
             $guybrush.removeClass('walking'+i);
             i += (i === 6) ? -5 : 1;
             $guybrush.addClass('walking'+i);
-          },200);
+          },150);
         }
       },
       'stop': function() {
@@ -219,6 +222,25 @@ $(function(){
               input.print('Take this rubber chicken with a pulley in the middle and leave me alone.', 3000);
             }, 2000);
             var chicken = new Item('chicken','chicken',0,0,true,false,true).store();
+          } else if (currentItem.className.indexOf('statue') > -1 && !currentItem.locked) {
+              guybrush.statues.push(currentItem.name);
+              var currentTop = parseInt($('[data-name='+currentItem.name+']').css('top'));
+              $('[data-name='+currentItem.name+']').css('top', String(currentTop - 10) + 'px');
+              currentItem.locked = true;
+              input.print('The statue moves slightly backwards with an ominous groan.')
+              if (guybrush.statues.length === 3) {
+                for (var i = 0; i < 3; i++) {
+                  if (guybrush.statues[i] !== guybrush.winningStatues[i]) {
+                    setup.gameOver('A magical force tears you apart as you push the wrong statue.');
+                    return;
+                  }
+                }
+                worldItems.portal.locked = false;
+                setTimeout(function() {
+                  input.print('As the final statue shudders to a halt, the portal opens.')
+                },2001)
+                $('.portal').addClass('open');
+              }
           } else {
             input.print('Pushing that does nothing.');
           }
@@ -312,7 +334,7 @@ $(function(){
             this.print('Try typing "Use X on Y" this time.');
           }
           break;
-
+        case 'log': console.log(worldItems);console.log(guybrush.inventory);break;
         default: this.error();
       }
       },
@@ -343,10 +365,14 @@ $(function(){
             guybrush.left();
           } else if (e.keyCode === 39) {
             e.preventDefault();
-            if ($guybrush.offset().left > 800 && !worldItems.gate.locked) {
+            if ($guybrush.offset().left > 800 && !worldItems.gate.locked && $('.window').hasClass('screen1')) {
               setup.clear();
               setup.welcome();
               setup.screen2();
+            } else if ($guybrush.offset().left > 800 && !worldItems.portal.locked && $('.window').hasClass('screen1')) {
+              setup.clear();
+              setup.welcome();
+              setup.screen3();
             }
             guybrush.right();
           }
@@ -363,7 +389,7 @@ $(function(){
               guybrush.stop();
             }
           } else if (e.keyCode === 38) {
-               setup.clear();
+              setup.clear();
               setup.welcome();
               setup.screen2();
           }
