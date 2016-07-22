@@ -90,3 +90,6 @@ A game that requires the player to textually interact with an on-screen characte
   * Loading screen
   * Victory screen
   * sounds????
+  * Fix message box
+  * change rat to something??? uzi??? shield?
+  * name Hera Athena Aphrodite
