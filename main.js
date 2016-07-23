@@ -6,8 +6,7 @@ $(function(){
       $message = $('.message'),
       $window = $('.window'),
       $items = $('.item'),
-      currentMsgDelay = 0,
-      noSpace = function (string) {
+      noSpace = function(string) {
         return string.replace(/ /g,'_');
       },
       command = {
@@ -15,36 +14,35 @@ $(function(){
         'subject': '',
         'object': ''
       },
-      clickTimer = 0;;
-  //name, className, width, height, top, left required for positioning; others are handled by prototypes
+      clickTimer = 0,
+      worldItems = {};
 
-  // Item constructor. Includes methods .place() for placing in window, and .store() for adding to inventory
-
-  function Item(name, className, top, left, storable, openable, usable, locked, container, items) {
-    this.name = (name) ? String(name) : 'missingNo';
-    this.className = (className) ? String(className) : 'missingNo';
-    this.top = String(top) + 'px';
-    this.left = String(left)+ 'px';
-    this.storable = storable;
-    this.openable = openable;
-    this.usable = usable;
-    this.locked = locked;
-    this.container = container;
-    this.items = items;
+  function Item(props) {
+    this.name = (props.name) ? String(props.name) : 'missingNo';
+    this.className = (props.className) ? String(props.className) : 'missingNo';
+    this.top = String(props.top) + 'px';
+    this.left = String(props.left)+ 'px';
+    this.storable = props.storable;
+    this.openable = props.openable;
+    this.usable = props.usable;
+    this.locked = props.locked;
+    this.container = props.container;
+    this.items = props.items;
   }
 
+  Item.prototype.screen = 0;
   Item.prototype.storable = false;
   Item.prototype.openable = false;
   Item.prototype.usable = false;
   Item.prototype.locked = false;
   Item.prototype.container = false;
   Item.prototype.items =  [];
-  Item.prototype.place = function(top,left) {
+  Item.prototype.place = function() {
     var $item = $('<div>');
     $item.addClass(this.className + ' item');
     $item.css({
-      'top': (top)?top:this.top,
-      'left': (left)?left:this.left
+      'top': this.top,
+      'left': this.left
     });
     $item.attr('data-name', noSpace(this.name));
     worldItems[this.name] = this;
@@ -57,14 +55,8 @@ $(function(){
     $item.addClass(this.className + ' item stored');
     guybrush.inventory[this.name] = this;
     $item.on('click',setup.nounListen);
-    console.log($item);
     $item.appendTo('.inventory');
-
-
   };
-
-  // worldItems contains all objects in the $window, items are added via Item.place()
-  var worldItems = {};
 
   // methods for setting up each level, plus other game states
   var setup = {
@@ -73,14 +65,14 @@ $(function(){
         $('h1,.controls,input').removeClass('hidden');
         setup.clear();
         setup.init();
-        setup.screen1();
+        setup.screen(0);
+        setup.screen(1);
         input.init();
         $window.off();
         setup.addVerb();
       });
     },
     'init': function() {
-      //TODO welcome splash screen
       $window.removeClass('gameover');
       $('.controls').removeClass('gameover');
       $guybrush = $('<div class="guybrush"></div>');
@@ -88,30 +80,23 @@ $(function(){
       $guybrush.appendTo($window);
       $message.appendTo($window);
     },
-    'screen1': function() { // TODO change some names to be more descriptive
-      $window.addClass('screen1');
-      var chest = new Item('green chest','chest green',300,100,false,true,false,false,true,['bug']).place();
-      var redChest = new Item('red chest','chest red',300,200,false,true,false,false,true,['rat']).place(); //change rat?
-      var blueChest = new Item('blue chest','chest blue',300,300,false,true,false,false,true,['key']).place();
-      var gate = new Item('gate','gate',380,603,false,true,false,true).place();
-      var turtle = new Item('turtle','turtle',359,  476).place();
-      var bomb = new Item('bomb','bomb',0,0,true,false,true).store();
-      var sword = new Item('sword','sword',0,0,true,false,true).store();
-    },
-    'screen2': function() {
-      $window.addClass('screen2');
-      var knife = new Item('knife','knife',366,474,true,false,true).place();
-      var statue = new Item('statue of hera','statue red',235,150).place();
-      var statue2 = new Item('statue of athena','statue green',235,250).place();
-      var statue3 = new Item('statue of aphrodite','statue blue',235,350).place();
-      var portal = new Item('portal','portal',0,458,false,true,false,true).place();
-    },
-    'screen3': function() {
-      $window.addClass('screen3');
-      var boss = new Item('boss','boss',0,458).place();
+    'screen': function(num) {
+      if (num === 0) {
+        for (var item in storage) {
+          if (storage[item]['screen'] === num) {
+            new Item(storage[item]).store()
+          }
+        }
+      } else {
+        $window.addClass('screen' + String(num));
+        for (var item in storage) {
+          if (storage[item]['screen'] === num) {
+            new Item(storage[item]).place()
+          }
+        }
+      }
     },
     'clear' : function() {
-      // TODO LOADING SCREEN
       $window.empty();
       worldItems = {};
     },
@@ -142,7 +127,6 @@ $(function(){
     'addVerb': function() {
       $('.command').on('click',function() {
         $items = $('.item');
-        console.log($items);
         command.verb = $(this)['0'].id;
         clickTimer = setTimeout(function() {
           command.verb = '';
@@ -153,38 +137,31 @@ $(function(){
       })
     },
     'nounListen': function() {
-      console.log($(this));
       if (command.verb === 'use') {
         if (command.subject) {
           command.object = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
           input.parse(command.verb + ' ' + command.subject + ' on ' + command.object);
-          command.subject = '';
-          command.verb = '';
-          command.object = '';
+          command = {'verb' : '','subject' : '', 'object' : ''};
         } else {
           command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
         }
       } else if (command.verb) {
-        clearTimeout(clickTimer);
-        command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
-        console.log(command);
-        input.parse(command.verb + ' ' + command.subject);
-        command.subject = '';
-        command.verb = '';
-        command.object = '';
+          clearTimeout(clickTimer);
+          command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+          input.parse(command.verb + ' ' + command.subject);
+          command = {'verb' : '','subject' : '', 'object' : ''};
       }
     }
   };
 
-
   // Guybrush object. Contains statuses and methods
-
   var guybrush = {
-    'inventory':{},                                     // holds Item objects, using Item.store()
-    'steps': 0,                                         // for walking animation
-    'statues' : [],                                     // for puzzle on screen 2
-    'winningStatues' : ['statue of aphrodite','statue of hera','statue of athena'],  // winning combos for statue puzzle
-    'walk': function() {                                // scroll through walking animation classes
+    'inventory':{},
+    'steps': 0, // for walking animation
+    'statues' : [],
+    // for puzzle on screen 2
+    'winningStatues' : ['statue of aphrodite','statue of hera','statue of athena'],
+    'walk': function() {    // scroll through walking animation classes
       $guybrush.removeClass('walking'+(this.steps));
       var left = parseInt($guybrush.css('left'));
       left += ($guybrush.hasClass('right')) ? -8 : 8;
@@ -194,7 +171,7 @@ $(function(){
       this.steps += (this.steps === 6) ? -5 : 1;
       $guybrush.addClass('walking'+(this.steps));
     },
-    'stop': function() {           // stops walking, accounts for direction
+    'stop': function() { // stops walking, accounts for direction
       clearInterval(guybrush.moving);
       guybrush.moving = 0;
       this.rightStatus = $guybrush.hasClass('right');
@@ -204,7 +181,7 @@ $(function(){
       }
     },
     'near' : function(item) {      // collision detection
-      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 120);
+      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 12000);
     },
     'say' : function(noun) {   // prepping statements to print
       return noun.charAt(0).toUpperCase() + noun.substring(1) + '.';
@@ -226,8 +203,17 @@ $(function(){
               input.print('I opened it!');
             } else {
               input.print('There is a ' + currentItem.items[0] + ' inside.');
+              console.log(currentItem.top);
               var name = currentItem.items[0];
-              worldItems[name] = new Item(name,name,parseInt(currentItem.top) + 10,parseInt(currentItem.left) + 30,true,false,true);
+              var newProps = {
+                'name' : name,
+                'className' : name,
+                'top' : parseInt(currentItem.top) + 15,
+                'left' : parseInt(currentItem.left) + 30,
+                'storable' : true,
+                'usable' : true
+              }
+              worldItems[name] = new Item(newProps);
               worldItems[name].place();
             }
           } else {
@@ -240,7 +226,6 @@ $(function(){
     },
     'look' : function(item) {                          // TODO add algorithm for printing lists
       if (item) {
-        console.log(item);
         if (worldItems.hasOwnProperty(item) || guybrush.inventory.hasOwnProperty(item)) {
           input.print(descriptions[item], 2000);
         } else if (item === 'inventory') {
@@ -291,7 +276,7 @@ $(function(){
           setTimeout(function() {
             input.print('Take this rubber chicken with a pulley in the middle and leave me alone.', 3000);
           }, 2000);
-          var chicken = new Item('chicken','chicken',0,0,true,false,true).store();
+          new Item(storage.chicken).store();
         } else if (currentItem.name.indexOf('statue') > -1 && !currentItem.locked) {
             guybrush.statues.push(currentItem.name);
             var currentTop = parseInt($('[data-name='+noSpace(currentItem.name)+']').css('top'));
@@ -421,7 +406,6 @@ $(function(){
               input.print('It\'s a rubber chicken with a pulley in the middle. It seems totally useless.');
             }
             break;
-
         }
       }
     }
@@ -429,6 +413,7 @@ $(function(){
 
   // handling user input
   var input = {
+    'currentMsgDelay': 0,
     'parse' : function(input) {
     // Regex help from http://stackoverflow.com/questions/20731966/regex-remove-all-special-characters-except-numbers
     var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
@@ -454,10 +439,8 @@ $(function(){
         break;
       case 'use':
         var X = inputArr.slice(1,inputArr.indexOf('on')).join(' ');
-        console.log(X);
         if (X) {
           var Y = inputArr.slice(inputArr.indexOf('on') + 1, inputArr.length).join(' ');
-          console.log(Y);
         }
         if (X && Y) {
           guybrush.use(X,Y);
@@ -472,13 +455,13 @@ $(function(){
     'print' : function(msg, time) {
       var delay = (time) ? time : 2000;
       if (msg) {
-        clearTimeout(currentMsgDelay);
+        clearTimeout(input.currentMsgDelay);
         $message.html(msg)
         $message.css({
           'opacity': '1',
           'margin-left' : String(-1 *$message.outerWidth() / 2) + 'px'
         });
-        currentMsgDelay = setTimeout(function() {
+        this.currentMsgDelay = setTimeout(function() {
           $message.css('opacity', '0');
         }, delay);
       }
@@ -499,25 +482,25 @@ $(function(){
         } else if (e.keyCode === 39) { //walk right
           e.preventDefault();
           if ($window.hasClass('screen1')) { //level up!
-            if ($guybrush.offset().left > 800 && !worldItems.gate.locked) {
+            if ($guybrush.offset().left > 750 && !worldItems.gate.locked) {
               $window.removeClass('screen1')
               setup.loading();
               setTimeout(function(){
                 $window.removeClass('gameover');
                 setup.clear();
                 setup.init();
-                setup.screen2();
+                setup.screen(2);
               },7000)
             }
           } else if ($window.hasClass('screen2')) { //level up!
-            if ($guybrush.offset().left > 800 && !worldItems.portal.locked) {
+            if ($guybrush.offset().left > 750 && !worldItems.portal.locked) {
               $window.removeClass('screen2')
               setup.loading();
               setTimeout(function(){
                 $window.removeClass('gameover');
                 setup.clear();
                 setup.init();
-                setup.screen3();
+                setup.screen(3);
               },7000)
             }
           }
@@ -533,13 +516,13 @@ $(function(){
             $window.removeClass('screen1 screen2');
             setup.clear();
             setup.init();
-            setup.screen2();
+            setup.screen(2);
         }
       })
     },
-    'glow': function(id) { //glow current command
+    'glow': function(id) { //glow current keyword
       $('#'+id).addClass('glowText');
-      setTimeout(function(){$('#'+id).removeClass('glowText');},1000);
+      setTimeout(function(){$('#'+id).removeClass('glowText');},500);
     },
     'prepareList' : function(arr, prefix) {
       return arr.reduce(function(prev,curr,ind,arr){
@@ -565,27 +548,6 @@ $(function(){
     }
   }
 
-  // dscriptions for all items
-  var descriptions = {
-    'statue of hera' : 'This seemingly magical statue glows with a magical green energy. How boring.',
-    'statue of athena': 'This blue statue is pretty cool. But not the coolest.',
-    'statue of aphrodite': 'Wow! This red lady is clearly one of the best magical statues ever.',
-    'bomb'   : 'Powerful. Explosive. Free.',
-    'rat'    : 'Gross! It probably has scurvy or something.',
-    'sword'  : 'I feel strong just looking at this bad-ass sword.',
-    'boss'   : 'Holy $%!&, that\'s the second biggest Beholder that I\'ve ever seen!',
-    'green chest'  : 'Is it... oozing?',
-    'red chest' : 'It smells terrible.',
-    'blue chest' : 'Ugh, another chest? Who designed this game?',
-    'turtle' : 'Seems like an amiable fellow. I shouldn\'t push him.',
-    'gate'   : 'Darn, if only I had a key.',
-    'key'    : 'Ooh, shiny!',
-    'knife'  : 'Is this a knife?',
-    'portal' : 'If only there were some magical items nearby to open this portal. Sigh.',
-    'chicken': 'Totally useless.'
-  }
-
   //call setup functions!
   setup.start();
-
 });
