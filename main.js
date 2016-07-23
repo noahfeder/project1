@@ -181,7 +181,7 @@ $(function(){
       }
     },
     'near' : function(item) {      // collision detection
-      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 12000);
+      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 120);
     },
     'say' : function(noun) {   // prepping statements to print
       return noun.charAt(0).toUpperCase() + noun.substring(1) + '.';
@@ -224,7 +224,7 @@ $(function(){
         } // close enough check
       } // openable/exists chek
     },
-    'look' : function(item) {                          // TODO add algorithm for printing lists
+    'look' : function(item) {
       if (item) {
         if (worldItems.hasOwnProperty(item) || guybrush.inventory.hasOwnProperty(item)) {
           input.print(descriptions[item], 2000);
@@ -448,7 +448,6 @@ $(function(){
           this.print('Try typing "Use X on Y" this time.');
         }
         break;
-      case 'log': console.log(worldItems);console.log(guybrush.inventory);break;
       default: this.error();
     }
     },
@@ -512,11 +511,6 @@ $(function(){
         if (e.keyCode === 37 || e.keyCode === 39) { // stop walking on keyup
           e.preventDefault();
           guybrush.stop();
-        } else if (e.keyCode === 38) { //TODO Remove, only for debugging
-            $window.removeClass('screen1 screen2');
-            setup.clear();
-            setup.init();
-            setup.screen(2);
         }
       })
     },
