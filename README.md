@@ -4,15 +4,17 @@
 
 ### User Experiences:
 
-* See available commands and inventory DONE
+* See available commands and inventory
 
-* Type commands for Guybrush, our protagonist DONE
+* Type commands for Guybrush, our protagonist
 
-* Control Guybrush on the screen either through arrow keys  DONE `scrapped typed commands`
+* Control Guybrush on the screen either through arrow keys
 
-* Win when you arrive at the trophy DONE `changed to boss`
+* `added point and click`
 
-* Die at two or three particular challenge points DONE
+* Win when you ~~arrive at the trophy~~ defeat the boss
+
+* Die at two or three particular challenge points
 
 
 
@@ -23,41 +25,42 @@ A game that requires the player to textually interact with an on-screen characte
 ### Code Requirements:
 
 1. Animations for main character:
-  * Talk DONE
-  * Walk left DONE
-  * Walk right DONE
-  * Stand still DONE
+  * Talk
+  * Walk left
+  * Walk right
+  * Stand still
 
 2. Actions/verbs:
 
      ```
-     Verbs can take 0, 1, or 2 arguments DONE
+     Verbs can take 0, 1, or 2 arguments
      ```
 
-  * Left/right/stop DONE
-  * Open DONE
-  * Use X on Y DONE
-  * Grab DONE
-  * Look DONE
-  * Say DONE
-  * Inventory DONE
-  * Push DONE
+  * Left/right/stop
+  * Open
+  * Use X on Y
+  * Grab
+  * Look
+  * Say
+  * Inventory
+  * Push
 
 3. Objects
 
   1. First screen
-    * Gates DONE
-    * Chests DONE
-    * Turtle DONE
-    * Chicken DONE
+    * Gates
+    * Chests
+    * Turtle
+    * Chicken
   2. Second Screen
-    * Statues DONE
-    * Knife DONE
+    * Statues
+    * Knife
   3. Third screen
-    * Final Boss DONE
+    * Final Boss
   4. Starting inventory
-    * Sword DONE
-    * Bomb DONE
+    * Sword
+    * Bomb
+  5. Object constructor that takes object of parameters
 
       ```
       Object properties:
@@ -74,25 +77,13 @@ A game that requires the player to textually interact with an on-screen characte
         ```
 
 4. Input actions
-  * take in and parse text DONE
-  * prepare response DONE
-  * print response DONE
-  * [arrow keys to walk] DONE
+  * take in and parse text
+  * point and click
+  * prepare response
+  * print response
+  * [arrow keys to walk]
 
 5. "Plot"
-  * Find key in chest, interact with Turtle DONE
-  * Push buttons in right order, pick up Knife DONE
-  * Fight boss! DONE
-
-6. STRETCH GOALS / TODO
-  * ~~Welcome screen/instructions~~ DONE
-  * ~~Loading screen~~ DONE
-  * ~~Victory screen!!~~ DONE
-  * ~~Fix message box!!~~ DONE
-  * change rat to something??? uzi??? shield?
-  * name Hera Athena Aphrodite
-  * more descriptive names in general
-  * change .place() method to take position
-  * change Item constructor to obj
-  * sounds????
-  * Additional screen???
+  * Find key in chest, interact with Turtle
+  * Push buttons in right order, pick up Knife
+  * Fight boss!
