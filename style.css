@@ -96,16 +96,16 @@ h1 {
 }
 
 .screen1 {
-  background-image: url(img/bg100.gif);
+  background-image: url(img/bg1.gif);
 }
 
 .screen2 {
-  background-image: url(img/bg9.gif);
+  background-image: url(img/bg2.gif);
   background-position: -50x 0px;
 }
 
 .screen3 {
-  background-image: url(img/bg5.gif);
+  background-image: url(img/bg3.gif);
 }
 
 .guybrush {
@@ -356,7 +356,7 @@ h1 {
   margin: 10px;
 }
 
-input {
+.interface {
   height: 20px;
   top: 580px;
   margin-top: 5px;
@@ -406,4 +406,44 @@ input {
 
 .blink {
   animation: blink 2s cubic-bezier(0,1,0,1) infinite;
+}
+
+.design {
+  position: fixed;
+  z-index: 100;
+  height: 400px;
+  top: 50px;
+  border: 3px solid red;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.preview {
+  width: 400px;
+  height: 200px;
+  background-image: url(img/bg1.gif);
+  background-size: cover;
+  margin-top: 50px;
+  display: block;
+  position: relative;
+}
+
+.previewScrip {
+  position:absolute;
+  top: 220px;
+  width: 400px;
+  text-align: center;
+}
+
+.itemForm {
+  width: 400px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+}
+
+.itemForm input {
+  flex: 0 1 30px;
+  display: inline;
+  margin: 15px;
 }

@@ -6,6 +6,7 @@ $(function(){
       $message = $('.message'),
       $window = $('.window'),
       $items = $('.item'),
+      $tooltip = $('.tooltip'),
       noSpace = function(string) {
         return string.replace(/ /g,'_');
       },
@@ -62,7 +63,7 @@ $(function(){
   var setup = {
     'start' : function() {
       $window.on('click',function() {
-        $('h1,.controls,input').removeClass('hidden');
+        $('h1,.controls,.interface').removeClass('hidden');
         setup.clear();
         setup.init();
         setup.screen(0);
@@ -79,6 +80,10 @@ $(function(){
       $message = $('<div class="message"></div>');
       $guybrush.appendTo($window);
       $message.appendTo($window);
+      $tooltip = $('<div class="message"></div>');
+      $window.on('mouseenter', function(e){
+        console.log(e);
+      })
     },
     'screen': function(num) {
       if (num === 0) {
@@ -117,7 +122,7 @@ $(function(){
     },
     'victory':function() {
       $('.controls').empty().text('You defeated the Beholder!').addClass('victory');
-      $('input').addClass('hidden');
+      $('.interface').addClass('hidden');
       $window.empty().html('').addClass('victory');
       for (var i = 0; i < 4; i++) {
         var $msg = $('<div>YOU WIN</div><br>');
@@ -466,9 +471,9 @@ $(function(){
       }
     },
     'init': function() { // initialize user input
-      $('input').on('keyup',function(e){
+      $('.interface').on('keyup',function(e){
       if (e.keyCode === 13) {
-        var $inputField = $('input');
+        var $inputField = $('.interface');
         input.parse($inputField.val());
         $inputField.val('');
       }

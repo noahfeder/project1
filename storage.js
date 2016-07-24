@@ -10,7 +10,7 @@ var storage =
     'items' : ['bug'],
     'screen' : 1
   },
-  'redchest' : {
+  'red chest' : {
     'name':'red chest',
     'className':'chest red',
     'top' : 300,
@@ -20,7 +20,7 @@ var storage =
     'items' : ['rat'],
     'screen' : 1
   },
-  'bluechest' : {
+  'blue chest' : {
     'name':'blue chest',
     'className':'chest blue',
     'top' : 300,
@@ -69,21 +69,21 @@ var storage =
     'usable' : true,
     'screen' : 2
   },
-  'statue' : {
+  'statue of hera' : {
     'name' : 'statue of hera',
     'className' : 'statue red',
     'top' : 235,
     'left' :150,
     'screen' : 2
   },
-  'statue2' : {
+  'statue of athena' : {
     'name' : 'statue of athena',
     'className' : 'statue green',
     'top' : 235,
     'left' : 250,
     'screen' : 2
   },
-  'statue3' : {
+  'statue of aphrodite' : {
     'name' : 'statue of aphrodite',
     'className' : 'statue blue',
     'top' : 235,
@@ -113,17 +113,17 @@ descriptions = {
   'statue of hera' : 'This seemingly magical statue of hera glows with a magical green energy. How boring.',
   'statue of athena': 'This blue statue of athena is pretty cool. But not the coolest.',
   'statue of aphrodite': 'Wow! This red aphrodite is clearly one of the best magical statues ever.',
-  'bomb'   : 'Powerful. Explosive. Free.',
-  'rat'    : 'Gross! It probably has scurvy or something.',
-  'sword'  : 'I feel strong just looking at this bad-ass sword.',
-  'boss'   : 'Holy $%!&, that\'s the second biggest Beholder that I\'ve ever seen!',
-  'green chest'  : 'Is it... oozing?',
-  'red chest' : 'It smells terrible.',
-  'blue chest' : 'Ugh, another chest? Who designed this game?',
-  'turtle' : 'Seems like an amiable fellow. I shouldn\'t push him.',
-  'gate'   : 'Darn, if only I had a key.',
-  'key'    : 'Ooh, shiny!',
-  'knife'  : 'Is this a knife?',
-  'portal' : 'If only there were some magical items nearby to open this portal. Sigh.',
-  'chicken': 'Totally useless.'
+  'bomb'   : 'A bomb. Powerful. Explosive. Free.',
+  'rat'    : 'A rat. Gross! It probably has scurvy or something.',
+  'sword'  : 'A sword. I feel strong just looking at this bad-ass sword.',
+  'boss'   : 'The boss. Holy $%!&, that\'s the second biggest Beholder that I\'ve ever seen!',
+  'green chest'  : 'A green chest. Is it... oozing?',
+  'red chest' : 'A red chest. It smells terrible.',
+  'blue chest' : 'A blue chest. Ugh, another one? Who designed this game?',
+  'turtle' : 'A turtle. Seems like an amiable fellow. I shouldn\'t push him.',
+  'gate'   : 'A gate. Darn, if only I had a key.',
+  'key'    : 'A key. Ooh, shiny!',
+  'knife'  : 'A knife. It doesn\'t seem too sharp.',
+  'portal' : 'A magical portal. If only there were some magical items nearby to open this portal. Sigh.',
+  'chicken': 'A rubber chicken with a pulley in the middle. Totally useless.'
 }

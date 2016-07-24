@@ -14,7 +14,33 @@
 
 <div class="centerColumn centered">
   <h1 class="centered hidden">SCUMM - The Game</h1>
-  <div class="centered window">
+  <div class="centered design">
+    <div class="preview">
+      <div class="previewScrip">Click on the image to choose a position</div>
+    </div>
+    <div class="itemForm">
+      <label for="usable">Usable?
+        <input type="checkbox" name="usable" value="usable">
+      </label>
+      <label for="storable">Storable?
+        <input type="checkbox" name="storable" value="storable">
+      </label>
+      <label for="openable">Openable?
+        <input type="checkbox" name="openable" value="openable">
+      </label>
+      <label for="locked">Locked?
+        <input type="checkbox" name="locked" value="locked">
+      </label>
+      <label for="container">Container?
+        <input type="checkbox" name="container" value="container">
+      </label>
+      <label for="name">Name?
+        <input type="text" name="name">
+      </label>
+      <input type="button" value="Finish">
+    </div>
+  </div>
+  <div class="centered window hidden">
     <div class="titleText">Welcome to SCUMM - The Game<br></div>
     <div class="welcomeText">An homage to the LucasArts adventures of the 1990s.<br>Use the left and right arrow keys to move.<br>Type the on-screen commands to interact with the objects you see.<br>Alternately, click a command followed by an object.<br>The "use" command requires the "use X on Y" format.<br>Type "look" by itself to list all on-screen items.<br><span class="blink">Click anywhere to begin!</span></div>
   </div>
@@ -31,7 +57,8 @@
       <div class="stored" id="inventory">INVENTORY</div>
     </div>
   </div>
-  <input type="text" class="centered hidden" placeholder="Type something!" autofocus></div>
+  <input type="text" class="centered hidden interface" placeholder="Type something!" autofocus>
+  </div>
 </div>
 
 </body>
