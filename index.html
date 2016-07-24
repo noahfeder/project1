@@ -32,6 +32,7 @@
           <option value="statue of athena">Statue of Athena</option>
         </select>
       </label>
+      <div id="miniPic" class="chest green"></div>
       <label for="screen">Where should it go?
         <select id="screen" name="screen">
           <option value="0">Inventory</option>
@@ -45,12 +46,20 @@
       <div class="markTheSpot">X</div>
     </div>
     <div class="previewScrip">Click on the image to choose a position</div>
-    <input type="button" value="Place Item">
-    <input type="button" value="Finish">
+    <div class="button place">Place Item</div>
+    <div class="button finish">Finish</div>
   </div>
   <div class="centered window hidden">  <!-- TODO UNHIDE -->
     <div class="titleText">Welcome to SCUMM - The Game<br></div>
-    <div class="welcomeText">An homage to the LucasArts adventures of the 1990s.<br>Use the left and right arrow keys to move.<br>Type the on-screen commands to interact with the objects you see.<br>Alternately, click a command followed by an object.<br>The "use" command requires the "use X on Y" format.<br>Type "look" by itself to list all on-screen items.<br><span class="blink">Click anywhere to begin!</span></div>
+    <div class="welcomeText">
+      An homage to the LucasArts adventures of the 1990s.
+      <br>Use the left and right arrow keys to move.
+      <br>Type the on-screen commands to interact with the objects you see.
+      <br>Alternately, click a command followed by an object.
+      <br>The "use" command requires the "use X on Y" format.
+      <br>Type "look" by itself to list all on-screen items.
+      <br><span class="blink">Click anywhere to begin!</span>
+    </div>
   </div>
   <div class="controls hidden centered">
     <div class="commands">

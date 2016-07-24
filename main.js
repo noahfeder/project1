@@ -80,9 +80,6 @@ $(function(){
       $guybrush.appendTo($window);
       $message.appendTo($window);
       $tooltip = $('<div class="message"></div>');
-      $window.on('mouseenter', function(e){
-        console.log(e);
-      })
     },
     'screen': function(num) {
       if (num === 0) {
@@ -136,9 +133,6 @@ $(function(){
           command.verb = '';
         }, 10000)
       });
-      $('.command').on('mouseover',function(){
-        input.glow($(this)['0'].id);
-      })
     },
     'nounListen': function() {
       if (command.verb === 'use') {
@@ -185,7 +179,6 @@ $(function(){
       }
     },
     'near' : function(item) {      // collision detection
-      console.log(item);
       if (guybrush.inventory[item.name]) {
         return true;
       } else {
@@ -212,7 +205,6 @@ $(function(){
               input.print('I opened it!');
             } else {
               input.print('There is a ' + currentItem.items[0] + ' inside.');
-              console.log(currentItem.top);
               var name = currentItem.items[0];
               var newProps = {
                 'name' : name,
@@ -458,7 +450,8 @@ $(function(){
           this.print('Try typing "Use X on Y" this time.');
         }
         break;
-      case 'log' : console.log(worldItems); console.log(guybrush.inventory); break;
+      case 'log' : console.log(worldItems); console.log(guybrush.inventory);
+        break;
       default: this.error();
     }
     },
@@ -500,7 +493,7 @@ $(function(){
                 setup.clear();
                 setup.init();
                 setup.screen(2);
-              },7000)
+              },5000)
             }
           } else if ($window.hasClass('screen2')) { //level up!
             if ($guybrush.offset().left > 750 && !worldItems.portal.locked) {
@@ -556,14 +549,13 @@ $(function(){
   var designer = {
     'propertiesToUse': {},
     'create' : function() {
-      if (this.getAttribute('value') === 'Finish' || $('#nameSelector option').length === 1) {
+      if ($(this).hasClass('finish') || $('#nameSelector option').length === 1) {
         $('.design').remove();
         setup.start();
       } else {
         var currentItem = $('[name="name"]').val();
         designer.propertiesToUse.screen = parseInt($('#screen').val());
-        designer.propertiesToUse.name = $('#name').val();
-        console.log(storage[designer.propertiesToUse.name]);
+        designer.propertiesToUse.name = $('#nameSelector').val();
         if (storage[designer.propertiesToUse.name]) {
           for (var prop in designer.propertiesToUse) {
             storage[designer.propertiesToUse.name][prop] = designer.propertiesToUse[prop];
@@ -572,14 +564,12 @@ $(function(){
           storage[designer.propertiesToUse.name] = designer.propertiesToUse;
           storage[designer.propertiesToUse.name]['className'] = designer.propertiesToUse.name;
         }
-        console.log(storage[designer.propertiesToUse.name]);
         $('option[value="'+currentItem+'"]').remove();
       }
     },
     'listeners' : function(){
-      $(':button').on('click',designer.create);
+      $('.button').on('click',designer.create);
       $('.preview').on('click', function(e){
-        console.log(e.offsetX+ ' , ' + e.offsetY);
         designer.propertiesToUse.top = Math.round((e.offsetY / 200) * 400);
         designer.propertiesToUse.left = Math.round((e.offsetX / 400) * 800);
         $('.markTheSpot').css({
@@ -587,19 +577,22 @@ $(function(){
           'left': e.offsetX,
           'opacity':1
         });
-      })
+      });
       $('#screen').on('change', function(){
         var newClass;
-        console.log(this.value);
         switch(this.value) {
-          case '2': newClass = 'screen2'; console.log(newClass);
+          case '2': newClass = 'screen2';
           break;
-          case '3': newClass = 'screen3'; console.log(newClass);
+          case '3': newClass = 'screen3';
           break;
-          default: newClass = 'screen1'; console.log(newClass);
+          default: newClass = 'screen1';
         }
         $('.preview').removeClass('screen1 screen2 screen3').addClass(newClass);
-      })
+      });
+      $('#nameSelector').on('change', function() {
+        var newClass = storage[$('#nameSelector').val()]['className'];
+        $('#miniPic').removeClass().addClass(newClass);
+      });
     }
   }
 
