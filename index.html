@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,32 +15,40 @@
 <div class="centerColumn centered">
   <h1 class="centered hidden">SCUMM - The Game</h1>
   <div class="centered design">
-    <div class="preview">
-      <div class="previewScrip">Click on the image to choose a position</div>
-    </div>
+    <div class="welcomeText">Customize where each item goes, or click Finish to start playing!</div>
     <div class="itemForm">
-      <label for="usable">Usable?
-        <input type="checkbox" name="usable" value="usable">
+      <label for="nameSelector">Which item?
+        <select id="nameSelector" name="name">
+          <option value="green chest">Green Chest</option>
+          <option value="red chest">Red Chest</option>
+          <option value="blue chest">Blue Chest</option>
+          <option value="turtle">Turtle</option>
+          <option value="key">Key</option>
+          <option value="bomb">Bomb</option>
+          <option value="sword">Sword</option>
+          <option value="knife">Knife</option>
+          <option value="statue of hera">Statue of Hera</option>
+          <option value="statue of aphrodite">Statue of Aphrodite</option>
+          <option value="statue of athena">Statue of Athena</option>
+        </select>
       </label>
-      <label for="storable">Storable?
-        <input type="checkbox" name="storable" value="storable">
+      <label for="screen">Where should it go?
+        <select id="screen" name="screen">
+          <option value="0">Inventory</option>
+          <option value="1">Screen 1</option>
+          <option value="2">Screen 2</option>
+          <option value="3">Screen 3</option>
+        </select>
       </label>
-      <label for="openable">Openable?
-        <input type="checkbox" name="openable" value="openable">
-      </label>
-      <label for="locked">Locked?
-        <input type="checkbox" name="locked" value="locked">
-      </label>
-      <label for="container">Container?
-        <input type="checkbox" name="container" value="container">
-      </label>
-      <label for="name">Name?
-        <input type="text" name="name">
-      </label>
-      <input type="button" value="Finish">
     </div>
+    <div class="preview screen1">
+      <div class="markTheSpot">X</div>
+    </div>
+    <div class="previewScrip">Click on the image to choose a position</div>
+    <input type="button" value="Place Item">
+    <input type="button" value="Finish">
   </div>
-  <div class="centered window hidden">
+  <div class="centered window hidden">  <!-- TODO UNHIDE -->
     <div class="titleText">Welcome to SCUMM - The Game<br></div>
     <div class="welcomeText">An homage to the LucasArts adventures of the 1990s.<br>Use the left and right arrow keys to move.<br>Type the on-screen commands to interact with the objects you see.<br>Alternately, click a command followed by an object.<br>The "use" command requires the "use X on Y" format.<br>Type "look" by itself to list all on-screen items.<br><span class="blink">Click anywhere to begin!</span></div>
   </div>
@@ -59,7 +67,5 @@
   </div>
   <input type="text" class="centered hidden interface" placeholder="Type something!" autofocus>
   </div>
-</div>
-
 </body>
 </html>

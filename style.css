@@ -4,6 +4,7 @@
 }
 
 /*
+* Font used with permission.
 * This font is copyright (c) Jakob Fischer at www.pizzadude.dk,  all rights reserved. Do not distribute without the author's permission.
 * Use this font for non-commercial use only! If you plan to use it for commercial purposes, contact me before doing so!
 * For more original fonts take a look at www.pizzadude.dk
@@ -45,7 +46,9 @@ h1 {
 .message {
   display: block;
   left: 50%;
+  height: -moz-max-content;
   height: max-content;
+  width: -moz-max-content;
   width: max-content;
   height: -webkit-max-content;
   width: -webkit-max-content;
@@ -57,9 +60,6 @@ h1 {
   word-wrap: break-word;
   border-style: solid;
   border-width: 3px;
-  -moz-border-image: url(img/bordertext.png) 3 stretch;
-  -webkit-border-image: url(img/bordertext.png) 3 stretch;
-  -o-border-image: url(img/bordertext.png) 3 stretch;
   border-image: url(img/bordertext.png) 3 stretch;
   border-radius: 5px;
   background-color: white;
@@ -77,9 +77,6 @@ h1 {
   top: 50px;
   border-style: solid;
   border-width: 3px;
-  -moz-border-image: url(img/border.png) 3 stretch;
-  -webkit-border-image: url(img/border.png) 3 stretch;
-  -o-border-image: url(img/border.png) 3 stretch;
   border-image: url(img/border.png) 3 stretch;
   background-repeat: no-repeat;
   background-size: cover;
@@ -101,7 +98,7 @@ h1 {
 
 .screen2 {
   background-image: url(img/bg2.gif);
-  background-position: -50x 0px;
+  background-position: -63px 0px;
 }
 
 .screen3 {
@@ -123,7 +120,8 @@ h1 {
 }
 
 .guybrush.right {
-  transform: scale(2,2) rotateY(180deg);
+  transform: scale(2,2)
+  rotateY(180deg);
   transform-origin: 11px 100px;
 }
 
@@ -216,15 +214,23 @@ h1 {
 
 .sword {
   background-image: url(img/sword.png);
+  width: 30px;
+  height: 30px;
+  background-size: cover;
 }
 
 .bomb {
   background-image: url(img/bomb.png);
+  width: 30px;
+  height: 30px;
+  background-size: cover;
 }
 
 .chicken {
   background-image: url(img/chick.png);
   background-size: contain;
+  width: 30px;
+  height: 30px;
 }
 
 .bug {
@@ -279,12 +285,6 @@ h1 {
   75% {left: 466px;}
 }
 
-@-webkit-keyframes bossFloat {
-  25% {left: 450px;}
-  50% {top: 20px;}
-  75% {left: 466px;}
-}
-
 .boss {
   background-image: url(img/boss.png);
   background-size: cover;
@@ -306,30 +306,40 @@ h1 {
   -webkit-border-image: url(img/border.png) 3 stretch;
   -o-border-image: url(img/border.png) 3 stretch;
   border-top-width: 0px;
+  display: -ms-flexbox;
   display: flex;
-  flex-flow: row nowrap;
+  -ms-flex-flow: row nowrap;
+      flex-flow: row nowrap;
   padding-top: 10px;
 }
 
 .commands, .inventory {
   height: 90px;
   padding: 5px;
+  display: -ms-flexbox;
   display: flex;
 }
 
 .commands {
-  flex: 0.6;
-  flex-flow: column wrap;
+  -ms-flex: 0.6;
+      flex: 0.6;
+  -ms-flex-flow: column wrap;
+      flex-flow: column wrap;
 }
 
 .inventory {
-  flex: 1;
-  flex-flow: row nowrap;
-  align-items: center;
+  -ms-flex: 1;
+      flex: 1;
+  -ms-flex-flow: row nowrap;
+      flex-flow: row nowrap;
+  -ms-flex-align: center;
+      -ms-grid-row-align: center;
+      align-items: center;
 }
 
 .command {
-  flex: 1 0 40px;
+  -ms-flex: 1 0 40px;
+      flex: 1 0 40px;
   transition: text-shadow 0.2s;
   text-align: center;
 }
@@ -349,7 +359,8 @@ h1 {
 }
 
 .stored {
-  flex: 0 1 55px;
+  -ms-flex: 0 1 55px;
+      flex: 0 1 55px;
   height: 84px;
   background-size: contain;
   position: relative;
@@ -414,36 +425,63 @@ h1 {
   height: 400px;
   top: 50px;
   border: 3px solid red;
+  display: -ms-flexbox;
   display: flex;
-  flex-flow: row nowrap;
+  -ms-flex-flow: column nowrap;
+      flex-flow: column nowrap;
+  text-align: center;
 }
 
 .preview {
   width: 400px;
   height: 200px;
-  background-image: url(img/bg1.gif);
   background-size: cover;
-  margin-top: 50px;
+  margin: 0 auto;
   display: block;
   position: relative;
 }
 
 .previewScrip {
-  position:absolute;
-  top: 220px;
+  position:relative;
+  margin: 0 auto;
   width: 400px;
   text-align: center;
 }
 
-.itemForm {
-  width: 400px;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-end;
+.markTheSpot {
+  position: absolute;
+  font-size: 2.5em;
+  color: red;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  opacity: 0;
 }
 
-.itemForm input {
-  flex: 0 1 30px;
-  display: inline;
-  margin: 15px;
+.itemForm {
+  width: 800px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
+  -ms-flex-align: end;
+      align-items: flex-end;
+  padding: 10px;
+}
+
+.itemForm label {
+  -ms-flex: 1 0 90px;
+      flex: 1 0 90px;
+  display: block;
+  margin: 25px auto;
+}
+
+input[type="button"] {
+  max-width: 80px;
+  display: block;
+  margin: 0 auto;
+}
+
+input[type="button"]:first-child {
+  margin-top: 50px;
 }

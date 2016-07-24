@@ -7,9 +7,6 @@ $(function(){
       $window = $('.window'),
       $items = $('.item'),
       $tooltip = $('.tooltip'),
-      noSpace = function(string) {
-        return string.replace(/ /g,'_');
-      },
       command = {
         'verb': '',
         'subject': '',
@@ -62,6 +59,8 @@ $(function(){
   // methods for setting up each level, plus other game states
   var setup = {
     'start' : function() {
+      $window.removeClass('hidden');
+      $('.design').addClass('hidden');
       $window.on('click',function() {
         $('h1,.controls,.interface').removeClass('hidden');
         setup.clear();
@@ -186,7 +185,12 @@ $(function(){
       }
     },
     'near' : function(item) {      // collision detection
-      return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 120);
+      console.log(item);
+      if (guybrush.inventory[item.name]) {
+        return true;
+      } else {
+        return (Math.abs($('[data-name=\"'+noSpace(item.name)+'\"]').offset().left - $guybrush.offset().left) < 120);
+      }
     },
     'say' : function(noun) {   // prepping statements to print
       return noun.charAt(0).toUpperCase() + noun.substring(1) + '.';
@@ -270,17 +274,18 @@ $(function(){
       }
     },
     'push' : function(item) {                       // basic interaction method
-      var currentItem = worldItems[item];
+      var currentItem = (worldItems[item]||guybrush.inventory[item]);
       if (!currentItem) {
         input.print('Can\'t push something that isn\'t there.');
       } else if (!guybrush.near(currentItem)){
         input.print('Too far to push!');
       } else {
-        if (currentItem.name === 'turtle') {
+        if (currentItem.name === 'turtle' && !currentItem.locked) {
           input.print('Quit with the pushing!');
           setTimeout(function() {
             input.print('Take this rubber chicken with a pulley in the middle and leave me alone.', 3000);
           }, 2000);
+          currentItem.locked = true;
           new Item(storage.chicken).store();
         } else if (currentItem.name.indexOf('statue') > -1 && !currentItem.locked) {
             guybrush.statues.push(currentItem.name);
@@ -453,6 +458,7 @@ $(function(){
           this.print('Try typing "Use X on Y" this time.');
         }
         break;
+      case 'log' : console.log(worldItems); console.log(guybrush.inventory); break;
       default: this.error();
     }
     },
@@ -547,6 +553,56 @@ $(function(){
     }
   }
 
+  var designer = {
+    'propertiesToUse': {},
+    'create' : function() {
+      if (this.getAttribute('value') === 'Finish' || $('#nameSelector option').length === 1) {
+        $('.design').remove();
+        setup.start();
+      } else {
+        var currentItem = $('[name="name"]').val();
+        designer.propertiesToUse.screen = parseInt($('#screen').val());
+        designer.propertiesToUse.name = $('#name').val();
+        console.log(storage[designer.propertiesToUse.name]);
+        if (storage[designer.propertiesToUse.name]) {
+          for (var prop in designer.propertiesToUse) {
+            storage[designer.propertiesToUse.name][prop] = designer.propertiesToUse[prop];
+          }
+        } else {
+          storage[designer.propertiesToUse.name] = designer.propertiesToUse;
+          storage[designer.propertiesToUse.name]['className'] = designer.propertiesToUse.name;
+        }
+        console.log(storage[designer.propertiesToUse.name]);
+        $('option[value="'+currentItem+'"]').remove();
+      }
+    },
+    'listeners' : function(){
+      $(':button').on('click',designer.create);
+      $('.preview').on('click', function(e){
+        console.log(e.offsetX+ ' , ' + e.offsetY);
+        designer.propertiesToUse.top = Math.round((e.offsetY / 200) * 400);
+        designer.propertiesToUse.left = Math.round((e.offsetX / 400) * 800);
+        $('.markTheSpot').css({
+          'top': e.offsetY,
+          'left': e.offsetX,
+          'opacity':1
+        });
+      })
+      $('#screen').on('change', function(){
+        var newClass;
+        console.log(this.value);
+        switch(this.value) {
+          case '2': newClass = 'screen2'; console.log(newClass);
+          break;
+          case '3': newClass = 'screen3'; console.log(newClass);
+          break;
+          default: newClass = 'screen1'; console.log(newClass);
+        }
+        $('.preview').removeClass('screen1 screen2 screen3').addClass(newClass);
+      })
+    }
+  }
+
   //call setup functions!
-  setup.start();
+  designer.listeners();
 });

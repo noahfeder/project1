@@ -1,6 +1,6 @@
 var storage =
 {
-  'chest' : {
+  'green chest' : {
     'name':'green chest',
     'className':'chest green',
     'top' : 300,
@@ -105,11 +105,35 @@ var storage =
     'top' : 0,
     'left' : 458,
     'screen' : 3
+  },
+  'key' : {
+    'name' : 'key',
+    'className' : 'key',
+    'storable' : true,
+    'usable' : true
+  },
+  'bug' : {
+    'name' : 'bug',
+    'className' : 'bug',
+    'storable' : true,
+    'usable' : true
+  },
+  'rat' : {
+    'name' : 'rat',
+    'className' : 'rat',
+    'storable' : true,
+    'usable' : true
+  },
+  'chicken' : {
+    'name' : 'chicken',
+    'className' : 'chicken',
+    'usable' : true,
+    'storable' : true
   }
-}
+};
 
   // dscriptions for all items
-descriptions = {
+var descriptions = {
   'statue of hera' : 'This seemingly magical statue of hera glows with a magical green energy. How boring.',
   'statue of athena': 'This blue statue of athena is pretty cool. But not the coolest.',
   'statue of aphrodite': 'Wow! This red aphrodite is clearly one of the best magical statues ever.',
@@ -126,4 +150,6 @@ descriptions = {
   'knife'  : 'A knife. It doesn\'t seem too sharp.',
   'portal' : 'A magical portal. If only there were some magical items nearby to open this portal. Sigh.',
   'chicken': 'A rubber chicken with a pulley in the middle. Totally useless.'
-}
+};
+
+var noSpace = function(string) {return string.replace(/ /g,'_');};
