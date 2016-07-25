@@ -153,5 +153,25 @@ var descriptions = {
   'bug' : 'A bug. It seems like it could evolve at any moment.'
 };
 
-var noSpace = function(string) {return string.replace(/ /g,'_');};
-var noScore = function(string) {return string.replace(/_/g,' ');};
+var noSpace = function(string) {
+  return string.replace(/ /g,'_');
+};
+var noScore = function(string) {
+  return string.replace(/_/g,' ');
+};
+var stringToArray = function(string) {
+  return string.toLowerCase().trim().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
+};
+var aliases = function(noun) {
+  if (noun.indexOf('blue statue') > -1) {
+    return 'statue of athena';
+  } else if (noun.indexOf('green statue') > -1) {
+    return 'statue of hera';
+  } else if (noun.indexOf('red statue') > -1) {
+    return 'statue of aphrodite';
+  } else if (noun.indexOf('door') > -1) {
+    return 'gate';
+  } else {
+    return noun;
+  }
+}

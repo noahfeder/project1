@@ -412,43 +412,40 @@ $(function(){
   var input = {
     'currentMsgDelay': 0,
     'parse' : function(input) {
-    // Regex help from http://stackoverflow.com/questions/20731966/regex-remove-all-special-characters-except-numbers
-    var inputArr = input.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "").replace(/\bi\b/g,'I').split(' ');
-    var verb = inputArr[0];
-    var noun = inputArr.slice(1).join(' ');
-    //aliases
-    noun = (noun.indexOf('blue statue') > -1) ? 'statue of athena' : noun;
-    noun = (noun.indexOf('green statue') > -1) ? 'statue of hera' : noun;
-    noun = (noun.indexOf('red statue') > -1) ? 'statue of aphrodite' : noun;
-    this.glow(verb);
-    switch (verb) {
-      case 'say': this.print((noun) ? guybrush.say(noun) : 'Hello!');
-        break;
-      case 'open': (noun) ? guybrush.open(noun) : this.print('What am I opening?');
-        break;
-      case 'look': guybrush.look((noun)?noun:'');
-        break;
-      case 'inventory': guybrush.look('inventory');
-        break;
-      case 'take': (noun) ? guybrush.take(noun) : this.print('What am I taking?');
-        break;
-      case 'push': (noun) ? guybrush.push(noun) : this.print('What am I pushing?');
-        break;
-      case 'use':
-        var X = inputArr.slice(1,inputArr.indexOf('on')).join(' ');
-        if (X) {
-          var Y = inputArr.slice(inputArr.indexOf('on') + 1, inputArr.length).join(' ');
-        }
-        if (X && Y) {
-          guybrush.use(X,Y);
-        } else {
-          this.print('Try typing "Use X on Y" this time.');
-        }
-        break;
-      case 'log' : console.log(worldItems); console.log(guybrush.inventory);
-        break;
-      default: this.error();
-    }
+      // Regex help from http://stackoverflow.com/questions/20731966/regex-remove-all-special-characters-except-numbers
+      var inputArr = stringToArray(input);
+      var verb = inputArr[0];
+      var noun = inputArr.slice(1).join(' ');
+      noun = aliases(noun);
+      this.glow(verb);
+      switch (verb) {
+        case 'say': this.print((noun) ? guybrush.say(noun) : 'Hello!');
+          break;
+        case 'open': (noun) ? guybrush.open(noun) : this.print('What am I opening?');
+          break;
+        case 'look': guybrush.look((noun)?noun:'');
+          break;
+        case 'inventory': guybrush.look('inventory');
+          break;
+        case 'take': (noun) ? guybrush.take(noun) : this.print('What am I taking?');
+          break;
+        case 'push': (noun) ? guybrush.push(noun) : this.print('What am I pushing?');
+          break;
+        case 'use':
+          var X = inputArr.slice(1,inputArr.indexOf('on')).join(' ');
+          if (X) {
+            var Y = inputArr.slice(inputArr.indexOf('on') + 1, inputArr.length).join(' ');
+          }
+          if (X && Y) {
+            guybrush.use(X,aliases(Y));
+          } else {
+            this.print('Try typing "Use X on Y" this time.');
+          }
+          break;
+        case 'log' : console.log(worldItems); console.log(guybrush.inventory);
+          break;
+        default: this.error();
+      }
     },
     'print' : function(msg, time) {
       var delay = (time) ? time : 2000;
