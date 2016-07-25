@@ -16,25 +16,19 @@ $(function(){
       worldItems = {};
 
   function Item(props) {
-    this.name = (props.name) ? String(props.name) : 'missingNo';
-    this.className = (props.className) ? String(props.className) : 'missingNo';
-    this.top = String(props.top) + 'px';
-    this.left = String(props.left)+ 'px';
-    this.storable = props.storable;
-    this.openable = props.openable;
-    this.usable = props.usable;
-    this.locked = props.locked;
-    this.container = props.container;
-    this.items = props.items;
+    this.name = props.name || 'missingNo';
+    this.className = props.className || 'missingNo';
+    this.top = (props.top) ? String(props.top) + 'px' : '0px';
+    this.left = (props.left) ? String(props.left)+ 'px' : '0px';
+    this.storable = props.storable || false;
+    this.openable = props.openable || false;
+    this.usable = props.usable || false;
+    this.locked = props.locked || false;
+    this.container = props.container || false;
+    this.items = props.items || [];
+    this.screen = props.screen || 0;
   }
 
-  Item.prototype.screen = 0;
-  Item.prototype.storable = false;
-  Item.prototype.openable = false;
-  Item.prototype.usable = false;
-  Item.prototype.locked = false;
-  Item.prototype.container = false;
-  Item.prototype.items =  [];
   Item.prototype.place = function() {
     var $item = $('<div>');
     $item.addClass(this.className + ' item');
@@ -47,6 +41,7 @@ $(function(){
     $item.on('click',setup.nounListen);
     $item.appendTo($window);
   };
+
   Item.prototype.store = function() {
     var $item = $('<div>');
     $item.attr('data-name', noSpace(this.name));
