@@ -87,3 +87,6 @@ A game that requires the player to textually interact with an on-screen characte
   * Find key in chest, interact with Turtle
   * Push buttons in right order, pick up Knife
   * Fight boss!
+
+![Planning Stage 1](http://i.imgur.com/pUlvsIK.jpg)
+![Planning Stage 2](http://i.imgur.com/FIO9Zt7.jpg)
