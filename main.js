@@ -583,6 +583,8 @@ $(function(){
           break;
           case '3': newClass = 'screen3';
           break;
+          case '0': newClass = 'screen0';
+          break;
           default: newClass = 'screen1';
         }
         $('.preview').removeClass('screen1 screen2 screen3').addClass(newClass);
