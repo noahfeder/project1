@@ -149,7 +149,9 @@ var descriptions = {
   'key'    : 'A key. Ooh, shiny!',
   'knife'  : 'A knife. It doesn\'t seem too sharp.',
   'portal' : 'A magical portal. If only there were some magical items nearby to open this portal. Sigh.',
-  'chicken': 'A rubber chicken with a pulley in the middle. Totally useless.'
+  'chicken': 'A rubber chicken with a pulley in the middle. Totally useless.',
+  'bug' : 'A bug. It seems like it could evolve at any moment.'
 };
 
 var noSpace = function(string) {return string.replace(/ /g,'_');};
+var noScore = function(string) {return string.replace(/_/g,' ');};

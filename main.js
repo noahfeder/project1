@@ -132,15 +132,15 @@ $(function(){
     'nounListen': function() {
       if (command.verb === 'use') {
         if (command.subject) {
-          command.object = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+          command.object = noScore($(this)['0'].getAttribute('data-name'))
           input.parse(command.verb + ' ' + command.subject + ' on ' + command.object);
           command = {'verb' : '','subject' : '', 'object' : ''};
         } else {
-          command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+          command.subject = noScore($(this)['0'].getAttribute('data-name'));
         }
       } else if (command.verb) {
           clearTimeout(clickTimer);
-          command.subject = $(this)['0'].getAttribute('data-name').replace(/_/g,' ');
+          command.subject = noScore($(this)['0'].getAttribute('data-name'));
           input.parse(command.verb + ' ' + command.subject);
           command = {'verb' : '','subject' : '', 'object' : ''};
       }
@@ -579,15 +579,17 @@ $(function(){
       $('#screen').on('change', function(){
         var newClass;
         switch(this.value) {
+          case '0': newClass = 'screen0';
+          break;
+          case '1': newClass = 'screen1';
+          break;
           case '2': newClass = 'screen2';
           break;
           case '3': newClass = 'screen3';
           break;
-          case '0': newClass = 'screen0';
-          break;
           default: newClass = 'screen1';
         }
-        $('.preview').removeClass('screen1 screen2 screen3').addClass(newClass);
+        $('.preview').removeClass('screen0 screen1 screen2 screen3').addClass(newClass);
       });
       $('#nameSelector').on('change', function() {
         var newClass = storage[$('#nameSelector').val()]['className'];
