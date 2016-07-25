@@ -82,7 +82,7 @@ h1 {
   background-size: cover;
 }
 
-.titleText, .welcomeText {
+.titleText, .welcomeText, .customText {
   text-align: center;
   line-height: 2em;
   font-size: 18px;
@@ -90,6 +90,10 @@ h1 {
 
 .titleText {
   font-size: 50px;
+}
+
+.customText {
+  line-height: 1em;
 }
 
 .screen1 {
@@ -309,7 +313,7 @@ h1 {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
+  flex-flow: row nowrap;
   padding-top: 10px;
 }
 
@@ -322,24 +326,24 @@ h1 {
 
 .commands {
   -ms-flex: 0.6;
-      flex: 0.6;
+  flex: 0.6;
   -ms-flex-flow: column wrap;
-      flex-flow: column wrap;
+  flex-flow: column wrap;
 }
 
 .inventory {
   -ms-flex: 1;
-      flex: 1;
+  flex: 1;
   -ms-flex-flow: row nowrap;
-      flex-flow: row nowrap;
+  flex-flow: row nowrap;
   -ms-flex-align: center;
-      -ms-grid-row-align: center;
-      align-items: center;
+  -ms-grid-row-align: center;
+  align-items: center;
 }
 
 .command {
   -ms-flex: 1 0 40px;
-      flex: 1 0 40px;
+  flex: 1 0 40px;
   text-align: center;
   width: 100px;
 }
@@ -365,7 +369,7 @@ h1 {
 
 .stored {
   -ms-flex: 0 1 55px;
-      flex: 0 1 55px;
+  flex: 0 1 55px;
   height: 84px;
   background-size: contain;
   position: relative;
@@ -433,7 +437,7 @@ h1 {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: column nowrap;
-      flex-flow: column nowrap;
+  flex-flow: column nowrap;
   text-align: center;
 }
 
@@ -466,18 +470,19 @@ h1 {
 
 .itemForm {
   width: 800px;
+  height: 50px;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-flow: row wrap;
-      flex-flow: row wrap;
-  -ms-flex-align: end;
-      align-items: flex-end;
-  padding: 10px;
+  flex-flow: row wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 10px 0;
 }
 
 .itemForm label {
   -ms-flex: 1 0 90px;
-      flex: 1 0 90px;
+  flex: 1 0 90px;
   display: block;
   margin: 25px auto;
 }
@@ -485,10 +490,11 @@ h1 {
 .button {
   width: 120px;
   display: block;
-  margin: 2px auto;
+  margin: 0 auto;
+  margin-top: 6px;
   padding: 5px;
   border: 2px solid green;
-  letter-spacing: 0;
+  letter-spacing: 2px;
 }
 
 .button:hover {
@@ -497,8 +503,14 @@ h1 {
 }
 
 #miniPic {
+  -ms-flex: 0 1 50px;
+  flex: 0 1 50px;
   width: 50px;
   height: 50px;
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.warning {
+  color: #F00;
 }

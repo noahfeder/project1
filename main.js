@@ -551,6 +551,8 @@ $(function(){
     'create' : function() {
       if ($(this).hasClass('finish') || $('#nameSelector option').length === 1) {
         $('.design').remove();
+        $('h1').text('SCUMM - The Game');
+        $('h1').addClass('hidden');
         setup.start();
       } else {
         var currentItem = $('[name="name"]').val();
@@ -565,6 +567,7 @@ $(function(){
           storage[designer.propertiesToUse.name]['className'] = designer.propertiesToUse.name;
         }
         $('option[value="'+currentItem+'"]').remove();
+        alert('You moved the ' + currentItem + '! Select a new item, or click Finish to start playing.');
       }
     },
     'listeners' : function(){

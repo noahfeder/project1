@@ -13,9 +13,12 @@
 <body>
 
 <div class="centerColumn centered">
-  <h1 class="centered hidden">SCUMM - The Game</h1>
+  <h1 class="centered">CUSTOMIZE YOUR GAME</h1>
   <div class="centered design">
-    <div class="welcomeText">Customize where each item goes, or click Finish to start playing!</div>
+    <div class="customText">
+      Customize where each item goes, or click Finish to start playing!<br>
+      <span class="warning">WARNING: Moving certain elements may break the game!</span>
+    </div>
     <div class="itemForm">
       <label for="nameSelector">Which item?
         <select id="nameSelector" name="name">
@@ -35,18 +38,18 @@
       <div id="miniPic" class="chest green"></div>
       <label for="screen">Where should it go?
         <select id="screen" name="screen">
-          <option value="0">Inventory</option>
           <option value="1">Screen 1</option>
           <option value="2">Screen 2</option>
           <option value="3">Screen 3</option>
+          <option value="0">Inventory</option>
         </select>
       </label>
     </div>
+    <div class="previewScrip">Click on the image to choose a position</div>
     <div class="preview screen1">
       <div class="markTheSpot">X</div>
     </div>
-    <div class="previewScrip">Click on the image to choose a position</div>
-    <div class="button place">Place Item</div>
+    <div class="button place">Place  Item</div>
     <div class="button finish">Finish</div>
   </div>
   <div class="centered window hidden">  <!-- TODO UNHIDE -->
@@ -75,6 +78,6 @@
     </div>
   </div>
   <input type="text" class="centered hidden interface" placeholder="Type something!" autofocus>
-  </div>
+</div>
 </body>
 </html>
